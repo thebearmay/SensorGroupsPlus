@@ -36,5 +36,5 @@ def installed() {
 }
 
 def updated() {
-    log.info "updated..."
+	log.info "updated..."
 }
