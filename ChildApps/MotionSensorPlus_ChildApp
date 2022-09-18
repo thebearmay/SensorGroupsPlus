@@ -79,7 +79,8 @@ def initialize() {
     createOrUpdateChildDevice()
     motionHandler()
     def device = getChildDevice(state.motionDevice)
-	device.sendEvent(name: "TotalCount", value: motionSensors.size())    
+	device.sendEvent(name: "TotalCount", value: motionSensors.size())
+    device.sendEvent(name: "ActiveThreshold", value: activeThreshold) 
 	if (debugOutput) {
 		runIn(1800,logsOff)
 	}
