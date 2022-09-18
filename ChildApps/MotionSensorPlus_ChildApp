@@ -21,13 +21,13 @@ definition(
     author: "Ryan Elliott",
     description: "Creates a virtual device to track a group of motion sensors.",
     category: "Convenience",
-	parent: "rle.sg+:Sensor Groups+",
+    parent: "rle.sg+:Sensor Groups+",
     iconUrl: "",
     iconX2Url: "")
 
 preferences {
     page(name: "prefMotionGroup")
-	page(name: "prefSettings")
+    page(name: "prefSettings")
 }
 
 def prefMotionGroup() {
@@ -52,7 +52,7 @@ def prefSettings() {
             
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
-	}
+    }
 }
 
 def installed() {
@@ -69,9 +69,9 @@ def uninstalled() {
 
 def updated() {	
     logDebug "Updated with settings: ${settings}"
-	unschedule()
+    unschedule()
     unsubscribe()
-	initialize()
+    initialize()
 }
 
 def initialize() {
@@ -86,37 +86,35 @@ def initialize() {
 }
 
 def motionHandler(evt) {
-	log.info "Motion sensor change; checking totals..."
-	def device = getChildDevice(state.motionDevice)
+    log.info "Motion sensor change; checking totals..."
+    def device = getChildDevice(state.motionDevice)
     getCurrentCount()
-	if (state.totalActive >= activeThreshold) {
+    if (state.totalActive >= activeThreshold) {
         log.info "Active threshold met; setting group device as active"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "motion", value: "active")
-	}
-	else {
+    } else {
         log.info "Active threshold not met; setting group device as inactive"
         logDebug "Current threshold value is ${activeThreshold}"
-		device.sendEvent(name: "motion", value: "inactive")
-	}
+        device.sendEvent(name: "motion", value: "inactive")
+    }
 }
 
 
 def createOrUpdateChildDevice() {
-	def childDevice = getChildDevice("motiongroup:" + app.getId())
+    def childDevice = getChildDevice("motiongroup:" + app.getId())
     if (!childDevice || state.motionDevice == null) {
         logDebug "Creating child device"
-		state.motionDevice = "motiongroup:" + app.getId()
-		addChildDevice("rle.sg+", "Sensor Groups+_Virtual Motion Sensor", "motiongroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
-    }
-	else if (childDevice && childDevice.name != app.label)
+        state.motionDevice = "motiongroup:" + app.getId()
+        addChildDevice("rle.sg+", "Sensor Groups+_Virtual Motion Sensor", "motiongroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+    } else if (childDevice && childDevice.name != app.label)
 		childDevice.name = app.label + "_device"
 }
 
 def logDebug(msg) {
     if (settings?.debugOutput) {
 		log.debug msg
-	}
+    }
 }
 
 def logsOff(){
@@ -125,16 +123,14 @@ def logsOff(){
 }
 
 def getCurrentCount() {
-	def device = getChildDevice(state.motionDevice)
-	def totalActive = 0
+    def device = getChildDevice(state.motionDevice)
+    def totalActive = 0
     def totalInactive = 0
-	motionSensors.each { it ->
-		if (it.currentValue("motion") == "active")
-		{
-			totalActive++
-		}
-		else if (it.currentValue("motion") == "inactive")
-		{
+    motionSensors.each { it ->
+        if (it.currentValue("motion") == "active") {
+            totalActive++
+        } else 
+            if (it.currentValue("motion") == "inactive") {
 			totalInactive++
 		}
     }
@@ -142,5 +138,5 @@ def getCurrentCount() {
     logDebug "There are ${totalActive} sensors active."
     logDebug "There are ${totalInactive} sensors inactive."
     device.sendEvent(name: "TotalActive", value: totalActive)
-    device.sendEvent(name: "TotalInactive", value: totalInactive)	
+    device.sendEvent(name: "TotalInactive", value: totalInactive)
 }
