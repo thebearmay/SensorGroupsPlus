@@ -14,11 +14,6 @@
  *
  * v1.0		RLE		Creation
  */
-
-//Need to add logic to handle setting the virtual device state when adding/removing devices.
-//Need to add logic to run the "totals" after the monitored devices are selected.
-    //Or exclude logging in this instance somehow.
-    //Maybe just move child creation to after device selection.****
  
 definition(
     name: "Sensor Groups+_Motion",
@@ -27,7 +22,7 @@ definition(
     description: "Creates a virtual device to track a group of motion sensors.",
     category: "Convenience",
 	parent: "rle.sg+:Sensor Groups+",
-	iconUrl: "",
+    iconUrl: "",
     iconX2Url: "")
 
 preferences {
