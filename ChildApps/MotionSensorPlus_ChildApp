@@ -1,0 +1,155 @@
+/**
+ *
+ *  Sensor Groups+_Motion
+ *
+ *  Copyright 2022 Ryan Elliott
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ * 
+ * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *	v1.0	RLE		Creation
+ */
+
+//Need to add logic to handle setting the virtual device state when adding/removing devices.
+//Need to add logic to run the "totals" after the monitored devices are selected.
+    //Or exclude logging in this instance somehow.
+    //Maybe just move child creation to after device selection.****
+ 
+definition(
+    name: "Sensor Groups+_Motion",
+    namespace: "rle.sg+",
+    author: "Ryan Elliott",
+    description: "Creates a virtual device to track a group of motion sensors.",
+    category: "Convenience",
+	parent: "rle.sg+:Sensor Groups+",
+	iconUrl: "",
+    iconX2Url: "")
+
+preferences {
+    page(name: "prefMotionGroup")
+	page(name: "prefSettings")
+}
+
+def prefMotionGroup() {
+	return dynamicPage(name: "prefMotionGroup", title: "Create a Motion Group", nextPage: "prefSettings", uninstall:true, install: false) {
+		section {
+            label title: "Enter a name for this child app. This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select.", required:true
+		}
+	}
+}
+
+def prefSettings() {
+	return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
+		section {
+			paragraph "Please choose which sensors to include in this group. When all the sensors are inactive, the virtual device is inactive. If any sensor is active, the virtual device is active."
+
+			input "motionSensors", "capability.motionSensor", title: "Motion sensors to monitor", multiple:true, required:true
+        }
+        section {
+            paragraph "Set how many sensors are required to change the status of the virtual device."
+            
+            input "activeThreshold", "number", title: "How many sensors must be active before the group is active? Leave set to one if any motion sensor active should make the group active.", required:false, defaultValue: 1
+            
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+        }
+	}
+}
+
+def installed() {
+	initialize()
+}
+
+def uninstalled() {
+	logDebug "uninstalling app"
+	for (device in getChildDevices())
+	{
+		deleteChildDevice(device.deviceNetworkId)
+	}
+}
+
+def updated() {	
+    logDebug "Updated with settings: ${settings}"
+	unschedule()
+    unsubscribe()
+	initialize()
+}
+
+def initialize() {
+	subscribe(motionSensors, "motion", motionHandler)
+    createOrUpdateChildDevice()
+    getCurrentCount()
+    def device = getChildDevice(state.motionDevice)
+	device.sendEvent(name: "TotalCount", value: motionSensors.size())    
+	if (debugOutput) {
+		runIn(1800,logsOff)
+	}
+}
+
+def motionHandler(evt) {
+	log.info "Motion sensor change; checking totals..."
+	def device = getChildDevice(state.motionDevice)
+    getCurrentCount()
+	if (state.totalActive >= activeThreshold) {
+        log.info "Active threshold met; setting group device as active"
+        logDebug "Current threshold value is ${activeThreshold}"
+        device.sendEvent(name: "motion", value: "active")
+	}
+	else {
+        log.info "Active threshold not met; setting group device as inactive"
+        logDebug "Current threshold value is ${activeThreshold}"
+		device.sendEvent(name: "motion", value: "inactive")
+	}
+}
+
+
+def createOrUpdateChildDevice() {
+	def childDevice = getChildDevice("motiongroup:" + app.getId())
+    if (!childDevice || state.motionDevice == null) {
+        logDebug "Creating child device"
+		state.motionDevice = "motiongroup:" + app.getId()
+		addChildDevice("rle.sg+", "Sensor Groups+_Virtual Motion Sensor", "motiongroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+    }
+	else if (childDevice && childDevice.name != app.label)
+		childDevice.name = app.label + "_device"
+}
+
+def logDebug(msg) {
+    if (settings?.debugOutput) {
+		log.debug msg
+	}
+}
+
+def logsOff(){
+    log.warn "debug logging disabled..."
+    app.updateSetting("debugOutput",[value:"false",type:"bool"])
+}
+
+def getCurrentCount() {
+	def device = getChildDevice(state.motionDevice)
+	def totalActive = 0
+    def totalInactive = 0
+	motionSensors.each { it ->
+		if (it.currentValue("motion") == "active")
+		{
+			totalActive++
+		}
+		else if (it.currentValue("motion") == "inactive")
+		{
+			totalInactive++
+		}
+    }
+    state.totalActive = totalActive
+    logDebug "There are ${totalActive} sensors active."
+    logDebug "There are ${totalInactive} sensors inactive."
+    device.sendEvent(name: "TotalActive", value: totalActive)
+    device.sendEvent(name: "TotalInactive", value: totalInactive)	
+}
