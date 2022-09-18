@@ -77,7 +77,7 @@ def updated() {
 def initialize() {
 	subscribe(motionSensors, "motion", motionHandler)
     createOrUpdateChildDevice()
-    getCurrentCount()
+    motionHandler()
     def device = getChildDevice(state.motionDevice)
 	device.sendEvent(name: "TotalCount", value: motionSensors.size())    
 	if (debugOutput) {
