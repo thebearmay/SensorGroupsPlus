@@ -28,6 +28,7 @@ metadata {
 		attribute "TotalCount", "number"
 		attribute "TotalActive", "number"
 		attribute "TotalInactive", "number"
+        attribute "ActiveThreshold", "number"
 	}
 }
 
