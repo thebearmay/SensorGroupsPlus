@@ -63,16 +63,16 @@ def uninstalled() {
 }
 
 def updated() {	
-    logDebug "Updated with settings: ${settings}"
+    	logDebug "Updated with settings: ${settings}"
 	unschedule()
-    unsubscribe()
+    	unsubscribe()
 	initialize()
 }
 
 def initialize() {
 	subscribe(contactSensors, "contact", contactHandler)
 	createOrUpdateChildDevice()
-    getCurrentCount()
+    contactHandler()
     def device = getChildDevice(state.contactDevice)
     device.sendEvent(name: "TotalCount", value: contactSensors.size())
     runIn(1800,logsOff)
