@@ -1,6 +1,6 @@
 /**
  *
- *  Virtual Motion Sensor Group+
+ * Sensor Groups+_Virtual Motion Sensor
  *
  * Copyright 2022 Ryan Elliott
  * 
@@ -24,7 +24,7 @@ metadata {
 		capability "Motion Sensor"
 		capability "Actuator"
 			
-        attribute "motion", "enum", ["closed","open"]
+		attribute "motion", "enum", ["closed","open"]
 		attribute "TotalCount", "number"
 		attribute "TotalActive", "number"
 		attribute "TotalInactive", "number"
@@ -36,5 +36,5 @@ def installed() {
 }
 
 def updated() {
-    log.info "updated..."
+	log.info "updated..."
 }
