@@ -45,7 +45,7 @@ def mainPage() {
     	isInstalled()
 		if(state.appInstalled == 'COMPLETE'){
 			section("${app.label}") {
-				paragraph "Provides options for combining multiple contact sensors into a single device so you can receive a single status"
+				paragraph "Provides options for combining multiple sensors into a single device to provide combined updates."
 			}
 			section("Child Apps") {
 				app(name: "contactApp+", appName: "Sensor Groups+_Contact", namespace: "rle.sg+", title: "Add a new Contact Sensor Group+ Instance", multiple: true)
