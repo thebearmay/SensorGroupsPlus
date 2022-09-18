@@ -24,7 +24,7 @@ metadata {
 		capability "Motion Sensor"
 		capability "Actuator"
 			
-		attribute "motion", "enum", ["closed","open"]
+		attribute "motion", "enum", ["active","inactive"]
 		attribute "TotalCount", "number"
 		attribute "TotalActive", "number"
 		attribute "TotalInactive", "number"
