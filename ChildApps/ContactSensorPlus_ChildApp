@@ -82,7 +82,6 @@ def contactHandler(evt) {
     log.info "Contact changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.contactDevice)
-	
 	if (state.totalClosed < contactSensors.size())
 	{
 		log.info "Not all closed; setting virtual device as open"
