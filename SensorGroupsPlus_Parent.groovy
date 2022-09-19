@@ -50,6 +50,7 @@ def mainPage() {
 			section("Child Apps") {
 				app(name: "contactApp+", appName: "Sensor Groups+_Contact", namespace: "rle.sg+", title: "Add a new Contact Sensor Group+ Instance", multiple: true)
 				app(name: "motionApp+", appName: "Sensor Groups+_Motion", namespace: "rle.sg+", title: "Add a new Motion Sensor Group+ Instance", multiple: true)
+				app(name: "waterApp+", appName: "Sensor Groups+_Water", namespace: "rle.sg+", title: "Add a new Water Sensor Group+ Instance", multiple: true)
 			}
 			section("General") {
        			label title: "Enter a name for this parent app (optional)", required: false
