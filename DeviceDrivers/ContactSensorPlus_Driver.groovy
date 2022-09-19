@@ -1,6 +1,6 @@
 /**
  *
- * Virtual Contact Sensor Group+
+ * Sensor Groups+_Virtual Contact Sensor
  *
  * Copyright 2022 Ryan Elliott
  * 
