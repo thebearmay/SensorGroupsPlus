@@ -2,32 +2,34 @@
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
   "version": "1.0",
-  "minimumHEVersion": "2.1.9",
+  "minimumHEVersion": "0.0",
+  "licenseFile": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/LICENSE",
+  "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
   "apps": [
     {
-      "id": "ec6819db-7037-4fa8-97b3-24ae26560e22",
+      "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",
       "name": "Sensor Groups+",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/SensorGroupsPlus_Parent",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/SensorGroupsPlus_Parent.groovy",
       "required": true,
       "oauth": false,
       "primary": false
     },
     {
-      "id": "1a2808e3-371e-45ff-bd0d-f78bf807061f",
+      "id": "f955a181-79e5-4cf7-a0c9-1999a00039bb",
       "name": "Sensor Groups+_Contact",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/ContactSensorPlus_ChildApp",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/ContactSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
     },
     {
-      "id": "95859443-83c1-4b55-888c-c461a0ea6982",
+      "id": "c6fe11b4-8880-48b7-b1fc-017757a65bcb",
       "name": "Sensor Groups+_Motion",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/MotionSensorPlus_ChildApp",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/MotionSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -35,17 +37,17 @@
   ],
   "drivers": [
     {
-      "id": "cf20bbe1-4533-4ef6-9766-282c97d63579",
+      "id": "5bdafaf0-16a9-4361-8389-4f1369b00364",
       "name": "Sensor Groups+_Virtual Contact Sensor",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/ContactSensorPlus_Driver",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/ContactSensorPlus_Driver.groovy",
       "required": false
     },
     {
-      "id": "de028b59-949e-458b-af19-353a0fd1ed99",
+      "id": "ef3913dc-1a22-42af-a697-e72080f492da",
       "name": "Sensor Groups+_Virtual Motion Sensor",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/MotionSensorPlus_Driver",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/MotionSensorPlus_Driver.groovy",
       "required": false
     }
   ]
