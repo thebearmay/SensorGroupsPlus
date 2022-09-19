@@ -1,6 +1,6 @@
 /**
  *
- * Sensor Groups+_Virtual Water Sensor
+ * Sensor Groups+_Virtual CO Detector
  *
  * Copyright 2022 Ryan Elliott
  *
@@ -17,17 +17,17 @@
 
 metadata {
     definition(
-            name: "Sensor Groups+_Virtual Water Sensor",
+            name: "Sensor Groups+_Virtual CO Detector",
             namespace: "rle.sg+",
             author: "Ryan Elliott")
             {
-                capability "Water Sensor"
+                capability "Carbon Monoxide Detector"
                 capability "Actuator"
 
-                attribute "water", "enum", ["dry", "wet"]
+                attribute "carbonMonoxide ", "enum", ["clear", "detected"]
                 attribute "TotalCount", "number"
-                attribute "TotalWet", "number"
-                attribute "TotalDry", "number"
+                attribute "TotalDetected", "number"
+                attribute "TotalClear", "number"
             }
 }
 

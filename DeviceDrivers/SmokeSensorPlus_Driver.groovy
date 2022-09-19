@@ -1,6 +1,6 @@
 /**
  *
- * Sensor Groups+_Virtual Water Sensor
+ * Sensor Groups+_Virtual Smoke Detector
  *
  * Copyright 2022 Ryan Elliott
  *
@@ -17,17 +17,17 @@
 
 metadata {
     definition(
-            name: "Sensor Groups+_Virtual Water Sensor",
+            name: "Sensor Groups+_Virtual Smoke Detector",
             namespace: "rle.sg+",
             author: "Ryan Elliott")
             {
-                capability "Water Sensor"
+                capability "Smoke Detector"
                 capability "Actuator"
 
-                attribute "water", "enum", ["dry", "wet"]
+                attribute "smoke", "enum", ["clear", "detected"]
                 attribute "TotalCount", "number"
-                attribute "TotalWet", "number"
-                attribute "TotalDry", "number"
+                attribute "TotalDetected", "number"
+                attribute "TotalClear", "number"
             }
 }
 

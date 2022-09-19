@@ -1,6 +1,6 @@
 /**
  *
- * Sensor Groups+_Water
+ * Sensor Groups+_Smoke
  *
  * Copyright 2022 Ryan Elliott
  *
@@ -16,24 +16,24 @@
  */
 
 definition(
-        name: "Sensor Groups+_Water",
+        name: "Sensor Groups+_Smoke",
         namespace: "rle.sg+",
         author: "Ryan Elliott",
-        description: "Creates a virtual device to track a group of water sensors.",
+        description: "Creates a virtual device to track a group of smoke sensors.",
         category: "Convenience",
         parent: "rle.sg+:Sensor Groups+",
         iconUrl: "",
         iconX2Url: "")
 
 preferences {
-    page(name: "prefWaterGroup")
+    page(name: "prefSmokeGroup")
     page(name: "prefSettings")
 }
 
-def prefWaterGroup() {
-    return dynamicPage(name: "prefWaterGroup", title: "Create a Water Sensor Group", nextPage: "prefSettings", uninstall:true, install: false) {
+def prefSmokeGroup() {
+    return dynamicPage(name: "prefSmokeGroup", title: "Create a Smoke Sensor Group", nextPage: "prefSettings", uninstall:true, install: false) {
         section {
-            label title: "Enter a name for this child app. This will create a virtual water sensor which reports the wet/dry status based on the sensors you select.", required:true
+            label title: "Enter a name for this child app. This will create a virtual smoke sensor which reports the detected/clear status based on the sensors you select.", required:true
         }
     }
 }
@@ -41,9 +41,9 @@ def prefWaterGroup() {
 def prefSettings() {
     return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
         section {
-            paragraph "Please choose which sensors to include in this group. When all the sensors are dry, the virtual device is dry. If any sensor is wet, the virtual device is wet."
+            paragraph "Please choose which sensors to include in this group. When all the sensors are clear, the virtual device is clear. If any sensor has detected smoke, the virtual device is detected."
 
-            input "waterSensors", "capability.waterSensor", title: "Water sensors to monitor", multiple:true, required:true
+            input "smokeSensors", "capability.smokeDetector", title: "Smoke sensors to monitor", multiple:true, required:true
 
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
@@ -70,36 +70,36 @@ def updated() {
 }
 
 def initialize() {
-    subscribe(waterSensors, "water", waterHandler)
+    subscribe(smokeSensors, "smoke", smokeHandler)
     createOrUpdateChildDevice()
-    waterHandler()
-    def device = getChildDevice(state.waterDevice)
-    device.sendEvent(name: "TotalCount", value: waterSensors.size())
+    smokeHandler()
+    def device = getChildDevice(state.smokeDevice)
+    device.sendEvent(name: "TotalCount", value: smokeSensors.size())
     runIn(1800,logsOff)
 }
 
-def waterHandler(evt) {
-    log.info "Water changed, checking status count..."
+def smokeHandler(evt) {
+    log.info "Smoke status changed, checking status count..."
     getCurrentCount()
-    def device = getChildDevice(state.waterDevice)
-    if (state.totalDry < waterSensors.size())
+    def device = getChildDevice(state.smokeDevice)
+    if (state.totalClear < smokeSensors.size())
     {
-        log.info "Not all dry; setting virtual device as wet"
-        device.sendEvent(name: "water", value: "wet")
+        log.info "Not all clear; setting virtual device as detected"
+        device.sendEvent(name: "smoke", value: "detected")
     }
     else
     {
-        log.info "All closed; setting virtual device as closed"
-        device.sendEvent(name: "water", value: "dry")
+        log.info "All clear; setting virtual device as clear"
+        device.sendEvent(name: "smoke", value: "clear")
     }
 }
 
 def createOrUpdateChildDevice() {
-    def childDevice = getChildDevice("watergroup:" + app.getId())
-    if (!childDevice || state.waterDevice == null) {
+    def childDevice = getChildDevice("smokegroup:" + app.getId())
+    if (!childDevice || state.smokeDevice == null) {
         logDebug "Creating child device"
-        state.waterDevice = "watergroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_Virtual Water Sensor", "watergroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        state.smokeDevice = "smokegroup:" + app.getId()
+        addChildDevice("rle.sg+", "Sensor Groups+_Virtual Smoke Detector", "smokegroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
     }
     else if (childDevice && childDevice.name != (app.label + "_device"))
         childDevice.name = app.label + "_device"
@@ -117,22 +117,22 @@ def logsOff(){
 }
 
 def getCurrentCount() {
-    def device = getChildDevice(state.waterDevice)
-    def totalWet = 0
-    def totalDry = 0
-    waterSensors.each { it ->
-        if (it.currentValue("water") == "wet")
+    def device = getChildDevice(state.smokeDevice)
+    def totalDetected = 0
+    def totalClear = 0
+    smokeSensors.each { it ->
+        if (it.currentValue("smoke") == "detected")
         {
-            totalWet++
+            totalDetected++
         }
-        else if (it.currentValue("water") == "dry")
+        else if (it.currentValue("smoke") == "clear")
         {
-            totalDry++
+            totalClear++
         }
     }
-    state.totalDry = totalDry
-    logDebug "There are ${totalDry} sensors dry"
-    logDebug "There are ${totalWet} sensors wet"
-    device.sendEvent(name: "TotalDry", value: totalDry)
-    device.sendEvent(name: "TotalWet", value: totalWet)
+    state.totalClear = totalClear
+    logDebug "There are ${totalDetected} sensors detecting smoke"
+    logDebug "There are ${totalClear} sensors that are clear"
+    device.sendEvent(name: "TotalDetected", value: totalDetected)
+    device.sendEvent(name: "TotalClear", value: totalClear)
 }
