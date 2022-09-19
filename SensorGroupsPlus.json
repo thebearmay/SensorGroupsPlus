@@ -1,0 +1,52 @@
+{
+  "packageName": "Sensor Groups+",
+  "author": "Ryan Elliott",
+  "version": "1.0",
+  "minimumHEVersion": "2.1.9",
+  "dateReleased": "2022-09-18",
+  "apps": [
+    {
+      "id": "ec6819db-7037-4fa8-97b3-24ae26560e22",
+      "name": "Sensor Groups+",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/SensorGroupsPlus_Parent",
+      "required": true,
+      "oauth": false,
+      "primary": false
+    },
+    {
+      "id": "1a2808e3-371e-45ff-bd0d-f78bf807061f",
+      "name": "Sensor Groups+_Contact",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/ContactSensorPlus_ChildApp",
+      "required": true,
+      "oauth": false,
+      "primary": false
+    },
+    {
+      "id": "95859443-83c1-4b55-888c-c461a0ea6982",
+      "name": "Sensor Groups+_Motion",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/MotionSensorPlus_ChildApp",
+      "required": false,
+      "oauth": false,
+      "primary": false
+    }
+  ],
+  "drivers": [
+    {
+      "id": "cf20bbe1-4533-4ef6-9766-282c97d63579",
+      "name": "Sensor Groups+_Virtual Contact Sensor",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/ContactSensorPlus_Driver",
+      "required": false
+    },
+    {
+      "id": "de028b59-949e-458b-af19-353a0fd1ed99",
+      "name": "Sensor Groups+_Virtual Motion Sensor",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/MotionSensorPlus_Driver",
+      "required": false
+    }
+  ]
+}
