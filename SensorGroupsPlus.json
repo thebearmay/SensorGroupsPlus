@@ -19,7 +19,7 @@
       "name": "Sensor Groups+_Contact",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/ContactSensorPlus_ChildApp",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
