@@ -29,6 +29,7 @@ metadata {
 		attribute "TotalActive", "number"
 		attribute "TotalInactive", "number"
         attribute "ActiveThreshold", "number"
+		attribute "ActiveList", "string"
 	}
 }
 
