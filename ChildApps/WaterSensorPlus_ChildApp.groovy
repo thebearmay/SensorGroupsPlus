@@ -126,7 +126,12 @@ def getCurrentCount() {
         if (it.currentValue("water") == "wet")
         {
             totalWet++
-            wetList.add(it.label)
+			if (it.label) {
+                wetList.add(it.label)
+            }
+            else if (!it.label) {
+                wetList.add(it.name)
+            }
         }
         else if (it.currentValue("water") == "dry")
         {

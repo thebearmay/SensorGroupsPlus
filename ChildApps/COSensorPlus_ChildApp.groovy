@@ -126,7 +126,12 @@ def getCurrentCount() {
         if (it.currentValue("carbonMonoxide") == "detected")
         {
             totalDetected++
-            coDetectedList.add(it.label)
+			if (it.label) {
+                coDetectedList.add(it.label)
+            }
+            else if (!it.label) {
+                coDetectedList.add(it.name)
+            }
         }
         else if (it.currentValue("carbonMonoxide") == "clear")
         {

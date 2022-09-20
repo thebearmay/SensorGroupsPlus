@@ -126,7 +126,12 @@ def getCurrentCount() {
         if (it.currentValue("smoke") == "detected")
         {
             totalDetected++
-            smokeDetectedList.add(it.label)
+			if (it.label) {
+                smokeDetectedList.add(it.label)
+            }
+            else if (!it.label) {
+                smokeDetectedList.add(it.name)
+            }
         }
         else if (it.currentValue("smoke") == "clear")
         {
