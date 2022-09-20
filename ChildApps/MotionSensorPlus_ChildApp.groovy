@@ -13,6 +13,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * v1.0		RLE		Creation
+ * v1.1     RLE     Added list attribute to show triggered devices
  */
  
 definition(
@@ -93,7 +94,7 @@ def motionHandler(evt) {
     if (state.totalActive >= activeThreshold) {
         log.info "Active threshold met; setting group device as active"
         logDebug "Current threshold value is ${activeThreshold}"
-        device.sendEvent(name: "motion", value: "active")
+        device.sendEvent(name: "motion", value: "active", descriptionText: "The detected devices are ${state.activeList}")
     } else {
         log.info "Active threshold not met; setting group device as inactive"
         logDebug "Current threshold value is ${activeThreshold}"
@@ -127,17 +128,26 @@ def getCurrentCount() {
     def device = getChildDevice(state.motionDevice)
     def totalActive = 0
     def totalInactive = 0
+    def activeList = []
     motionSensors.each { it ->
-        if (it.currentValue("motion") == "active") {
+        if (it.currentValue("motion") == "active") 
+        {
             totalActive++
-        } else 
-            if (it.currentValue("motion") == "inactive") {
+            activeList.add(it.name)
+        } 
+        else if (it.currentValue("motion") == "inactive") 
+        {
 			totalInactive++
 		}
     }
     state.totalActive = totalActive
+    if (activeList.size() == 0) {
+        activeList.add("None")
+    }
+    state.activeList = activeList.sort()
     logDebug "There are ${totalActive} sensors active."
     logDebug "There are ${totalInactive} sensors inactive."
     device.sendEvent(name: "TotalActive", value: totalActive)
     device.sendEvent(name: "TotalInactive", value: totalInactive)
+    device.sendEvent(name: "ActiveList", value: state.activeList)
 }

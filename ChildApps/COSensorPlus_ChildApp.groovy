@@ -13,6 +13,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * v1.0		RLE		Creation
+ * v1.1     RLE     Added list attribute to show triggered devices
  */
 
 definition(
@@ -85,7 +86,7 @@ def carbonMonoxideHandler(evt) {
     if (state.totalClear < carbonMonoxideSensors.size())
     {
         log.info "Not all clear; setting virtual device as detected"
-        device.sendEvent(name: "carbonMonoxide", value: "detected")
+        device.sendEvent(name: "carbonMonoxide", value: "detected", descriptionText: "The detected devices are ${state.coDetectedList}")
     }
     else
     {
@@ -120,10 +121,12 @@ def getCurrentCount() {
     def device = getChildDevice(state.carbonMonoxideDevice)
     def totalDetected = 0
     def totalClear = 0
+    def coDetectedList = []
     carbonMonoxideSensors.each { it ->
         if (it.currentValue("carbonMonoxide") == "detected")
         {
             totalDetected++
+            coDetectedList.add(it.name)
         }
         else if (it.currentValue("carbonMonoxide") == "clear")
         {
@@ -131,8 +134,13 @@ def getCurrentCount() {
         }
     }
     state.totalClear = totalClear
+    if (coDetectedList.size() == 0) {
+        coDetectedList.add("None")
+    }
+    state.coDetectedList = coDetectedList.sort()
     logDebug "There are ${totalDetected} sensors detecting carbon monoxide"
     logDebug "There are ${totalClear} sensors that are clear"
     device.sendEvent(name: "TotalDetected", value: totalDetected)
     device.sendEvent(name: "TotalClear", value: totalClear)
+    device.sendEvent(name: "CODetectedList", value: state.coDetectedList)
 }

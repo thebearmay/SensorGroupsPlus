@@ -13,6 +13,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * v1.0		RLE		Creation
+ * v1.1     RLE     Added list attribute to show triggered devices
  */
 
 definition(
@@ -85,7 +86,7 @@ def waterHandler(evt) {
     if (state.totalDry < waterSensors.size())
     {
         log.info "Not all dry; setting virtual device as wet"
-        device.sendEvent(name: "water", value: "wet")
+        device.sendEvent(name: "water", value: "wet", descriptionText: "The wet devices are ${state.wetList}")
     }
     else
     {
@@ -120,10 +121,12 @@ def getCurrentCount() {
     def device = getChildDevice(state.waterDevice)
     def totalWet = 0
     def totalDry = 0
+    def wetList = []
     waterSensors.each { it ->
         if (it.currentValue("water") == "wet")
         {
             totalWet++
+            wetList.add(it.name)
         }
         else if (it.currentValue("water") == "dry")
         {
@@ -131,8 +134,13 @@ def getCurrentCount() {
         }
     }
     state.totalDry = totalDry
+    if (wetList.size() == 0) {
+        wetList.add("None")
+    }
+    state.wetList = wetList.sort()
     logDebug "There are ${totalDry} sensors dry"
     logDebug "There are ${totalWet} sensors wet"
     device.sendEvent(name: "TotalDry", value: totalDry)
     device.sendEvent(name: "TotalWet", value: totalWet)
+    device.sendEvent(name: "WetList", value: state.wetList)
 }

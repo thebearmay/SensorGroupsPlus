@@ -14,7 +14,6 @@
  *
  * v1.0		RLE		Creation
  * v1.1		RLE		Added water, smoke, and CO detectors
- * v1.2		RLE		Updated child apps/devices to be required to prevent errors in the parent app
  */
  
 definition(

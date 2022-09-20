@@ -13,6 +13,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * v1.0		RLE		Creation
+ * v1.1     RLE     Added list attribute to show triggered devices
  */
  
 definition(
@@ -85,7 +86,7 @@ def contactHandler(evt) {
 	if (state.totalClosed < contactSensors.size())
 	{
 		log.info "Not all closed; setting virtual device as open"
-		device.sendEvent(name: "contact", value: "open")
+		device.sendEvent(name: "contact", value: "open", descriptionText: "The open devices are ${state.openList}")
 	}
 	else
 	{
@@ -120,10 +121,12 @@ def getCurrentCount() {
 	def device = getChildDevice(state.contactDevice)
 	def totalOpen = 0
     def totalClosed = 0
+	def openList = []
 	contactSensors.each { it ->
 		if (it.currentValue("contact") == "open")
 		{
 			totalOpen++
+			openList.add(it.name)
 		}
 		else if (it.currentValue("contact") == "closed")
 		{
@@ -131,8 +134,13 @@ def getCurrentCount() {
 		}
     }
     state.totalClosed = totalClosed
+	if (openList.size() == 0) {
+        openList.add("None")
+    }
+	state.openList = openList.sort()
     logDebug "There are ${totalClosed} sensors closed"
     logDebug "There are ${totalOpen} sensors open"
     device.sendEvent(name: "TotalClosed", value: totalClosed)
-    device.sendEvent(name: "TotalOpen", value: totalOpen)	
+    device.sendEvent(name: "TotalOpen", value: totalOpen)
+	device.sendEvent(name: "OpenList", value: state.openList)
 }
