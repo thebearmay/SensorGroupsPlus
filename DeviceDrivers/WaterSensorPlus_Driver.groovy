@@ -28,6 +28,7 @@ metadata {
                 attribute "TotalCount", "number"
                 attribute "TotalWet", "number"
                 attribute "TotalDry", "number"
+                attribute "WetList", "string"
             }
 }
 

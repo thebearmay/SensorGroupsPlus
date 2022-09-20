@@ -28,6 +28,7 @@ metadata {
                 attribute "TotalCount", "number"
                 attribute "TotalDetected", "number"
                 attribute "TotalClear", "number"
+                attribute "SmokeDetectedList", "string"
             }
 }
 

@@ -28,6 +28,7 @@ metadata {
 		attribute "TotalCount", "number"
 		attribute "TotalOpen", "number"
 		attribute "TotalClosed", "number"
+		attribute "OpenList", "string"
 	}
 }
 

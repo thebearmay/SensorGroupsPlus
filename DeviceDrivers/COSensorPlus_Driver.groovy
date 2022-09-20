@@ -24,10 +24,11 @@ metadata {
                 capability "Carbon Monoxide Detector"
                 capability "Actuator"
 
-                attribute "carbonMonoxide ", "enum", ["clear", "detected"]
+                attribute "carbonMonoxide", "enum", ["clear", "detected"]
                 attribute "TotalCount", "number"
                 attribute "TotalDetected", "number"
                 attribute "TotalClear", "number"
+                attribute "CODetectedList", "string"
             }
 }
 
