@@ -14,14 +14,14 @@
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/SensorGroupsPlus_Parent.groovy",
       "required": true,
       "oauth": false,
-      "primary": false
+      "primary": true
     },
     {
       "id": "f955a181-79e5-4cf7-a0c9-1999a00039bb",
       "name": "Sensor Groups+_Contact",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/ContactSensorPlus_ChildApp.groovy",
-      "required": false,
+      "required": true,
       "oauth": false,
       "primary": false
     },
@@ -30,7 +30,7 @@
       "name": "Sensor Groups+_Motion",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/MotionSensorPlus_ChildApp.groovy",
-      "required": false,
+      "required": true,
       "oauth": false,
       "primary": false
     },
@@ -39,7 +39,7 @@
       "name": "Sensor Groups+_Water",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/WaterSensorPlus_ChildApp.groovy",
-      "required": false,
+      "required": true,
       "oauth": false,
       "primary": false
     },
@@ -48,7 +48,7 @@
       "name": "Sensor Groups+_Smoke",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/SmokeSensorPlus_ChildApp.groovy",
-      "required": false,
+      "required": true,
       "oauth": false,
       "primary": false
     },
@@ -57,7 +57,7 @@
       "name": "Sensor Groups+_CO",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/COSensorPlus_ChildApp.groovy",
-      "required": false,
+      "required": true,
       "oauth": false,
       "primary": false
     }
@@ -68,35 +68,35 @@
       "name": "Sensor Groups+_Virtual Contact Sensor",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/ContactSensorPlus_Driver.groovy",
-      "required": false
+      "required": true
     },
     {
       "id": "ef3913dc-1a22-42af-a697-e72080f492da",
       "name": "Sensor Groups+_Virtual Motion Sensor",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/MotionSensorPlus_Driver.groovy",
-      "required": false
+      "required": true
     },
     {
       "id": "fc5ca614-b23f-4338-bf57-6d648cbbd2d1",
       "name": "Sensor Groups+_Virtual CO Detector",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/COSensorPlus_Driver.groovy",
-      "required": false
+      "required": true
     },
     {
       "id": "982aa0c3-fb1f-4aab-93b2-7ba538af1a9a",
       "name": "Sensor Groups+_Virtual Smoke Detector",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/SmokeSensorPlus_Driver.groovy",
-      "required": false
+      "required": true
     },
     {
       "id": "7bc91979-8488-4f59-8460-f7185d06d8a2",
       "name": "Sensor Groups+_Virtual Water Sensor",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/WaterSensorPlus_Driver.groovy",
-      "required": false
+      "required": true
     }
   ]
 }
