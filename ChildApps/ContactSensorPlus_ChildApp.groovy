@@ -126,7 +126,7 @@ def getCurrentCount() {
 		if (it.currentValue("contact") == "open")
 		{
 			totalOpen++
-			openList.add(it.name)
+			openList.add(it.label)
 		}
 		else if (it.currentValue("contact") == "closed")
 		{

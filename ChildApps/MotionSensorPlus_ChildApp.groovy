@@ -133,7 +133,7 @@ def getCurrentCount() {
         if (it.currentValue("motion") == "active") 
         {
             totalActive++
-            activeList.add(it.name)
+            activeList.add(it.label)
         } 
         else if (it.currentValue("motion") == "inactive") 
         {
