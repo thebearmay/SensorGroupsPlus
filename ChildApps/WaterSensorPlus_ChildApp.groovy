@@ -14,6 +14,7 @@
  *
  * v1.0		RLE		Creation
  * v1.1     RLE     Added list attribute to show triggered devices
+ * v1.2     RLE     Added threshold input and associated logic
  */
 
 definition(
@@ -45,7 +46,12 @@ def prefSettings() {
             paragraph "Please choose which sensors to include in this group. When all the sensors are dry, the virtual device is dry. If any sensor is wet, the virtual device is wet."
 
             input "waterSensors", "capability.waterSensor", title: "Water sensors to monitor", multiple:true, required:true
-
+        }
+        section {
+            paragraph "Set how many sensors are required to change the status of the virtual device."
+            
+            input "activeThreshold", "number", title: "How many sensors must be wet before the group is wet? Leave set to one if any sensor being wet should make the group wet.", required:false, defaultValue: 1
+            
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -76,6 +82,7 @@ def initialize() {
     waterHandler()
     def device = getChildDevice(state.waterDevice)
     device.sendEvent(name: "TotalCount", value: waterSensors.size())
+    device.sendEvent(name: "WetThreshold", value: activeThreshold)
     runIn(1800,logsOff)
 }
 
@@ -83,14 +90,16 @@ def waterHandler(evt) {
     log.info "Water changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.waterDevice)
-    if (state.totalDry < waterSensors.size())
+    if (state.totalWet >= activeThreshold)
     {
-        log.info "Not all dry; setting virtual device as wet"
+        log.info "Wet threshold met; setting virtual device as wet"
+        logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "water", value: "wet", descriptionText: "The wet devices are ${state.wetList}")
     }
     else
     {
-        log.info "All closed; setting virtual device as closed"
+        log.info "Wet threshold not met; setting virtual device as dry"
+        logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "water", value: "dry")
     }
 }
@@ -138,7 +147,7 @@ def getCurrentCount() {
             totalDry++
         }
     }
-    state.totalDry = totalDry
+    state.totalWet = totalWet
     if (wetList.size() == 0) {
         wetList.add("None")
     }

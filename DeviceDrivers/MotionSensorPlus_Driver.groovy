@@ -14,6 +14,7 @@
  *
  * v1.0		RLE		Creation
  * v1.1     RLE     Added list attribute to show triggered devices
+ * v1.2     RLE     Added threshold attribute
  */
 
 metadata {

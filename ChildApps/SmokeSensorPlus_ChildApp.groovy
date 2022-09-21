@@ -14,6 +14,7 @@
  *
  * v1.0		RLE		Creation
  * v1.1     RLE     Added list attribute to show triggered devices
+ * v1.2     RLE     Added threshold input and associated logic
  */
 
 definition(
@@ -45,7 +46,12 @@ def prefSettings() {
             paragraph "Please choose which sensors to include in this group. When all the sensors are clear, the virtual device is clear. If any sensor has detected smoke, the virtual device is detected."
 
             input "smokeSensors", "capability.smokeDetector", title: "Smoke sensors to monitor", multiple:true, required:true
-
+        }
+        section {
+            paragraph "Set how many sensors are required to change the status of the virtual device."
+            
+            input "activeThreshold", "number", title: "How many sensors must detect smoke before the group is detected? Leave set to one if smoke detected by any sensor should change the group to detected.", required:false, defaultValue: 1
+            
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -76,6 +82,7 @@ def initialize() {
     smokeHandler()
     def device = getChildDevice(state.smokeDevice)
     device.sendEvent(name: "TotalCount", value: smokeSensors.size())
+    device.sendEvent(name: "SmokeDetectedThreshold", value: activeThreshold)
     runIn(1800,logsOff)
 }
 
@@ -83,14 +90,16 @@ def smokeHandler(evt) {
     log.info "Smoke status changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.smokeDevice)
-    if (state.totalClear < smokeSensors.size())
+    if (state.totalDetected >= activeThreshold)
     {
-        log.info "Not all clear; setting virtual device as detected"
+        log.info "Detected threshold met; setting group device as detected"
+        logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "smoke", value: "detected", descriptionText: "The detected devices are ${state.smokeDetectedList}")
     }
     else
     {
-        log.info "All clear; setting virtual device as clear"
+        log.info "Detected threshold not met; setting virtual device as clear"
+        logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "smoke", value: "clear")
     }
 }
@@ -138,7 +147,7 @@ def getCurrentCount() {
             totalClear++
         }
     }
-    state.totalClear = totalClear
+    state.totalDetected = totalDetected
     if (smokeDetectedList.size() == 0) {
         smokeDetectedList.add("None")
     }

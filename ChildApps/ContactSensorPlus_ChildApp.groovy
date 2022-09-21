@@ -14,6 +14,7 @@
  *
  * v1.0		RLE		Creation
  * v1.1     RLE     Added list attribute to show triggered devices
+ * v1.2     RLE     Added threshold input and associated logic
  */
  
 definition(
@@ -45,7 +46,12 @@ def prefSettings() {
 			paragraph "Please choose which sensors to include in this group. When all the sensors are closed, the virtual device is closed. If any sensor is open, the virtual device is open."
 
 			input "contactSensors", "capability.contactSensor", title: "Contact sensors to monitor", multiple:true, required:true
-       
+        }
+		section {
+            paragraph "Set how many sensors are required to change the status of the virtual device."
+            
+            input "activeThreshold", "number", title: "How many sensors must be open before the group is open? Leave set to one if any contact sensor open should make the group open.", required:false, defaultValue: 1
+            
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
 	}
@@ -76,6 +82,7 @@ def initialize() {
     contactHandler()
     def device = getChildDevice(state.contactDevice)
     device.sendEvent(name: "TotalCount", value: contactSensors.size())
+	device.sendEvent(name: "OpenThreshold", value: activeThreshold) 
     runIn(1800,logsOff)
 }
 
@@ -83,14 +90,14 @@ def contactHandler(evt) {
     log.info "Contact changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.contactDevice)
-	if (state.totalClosed < contactSensors.size())
+	if (state.totalOpen >= activeThreshold)
 	{
-		log.info "Not all closed; setting virtual device as open"
+		log.info "Open threshold met; setting virtual device as open"
+		logDebug "Current threshold value is ${activeThreshold}"
 		device.sendEvent(name: "contact", value: "open", descriptionText: "The open devices are ${state.openList}")
-	}
-	else
-	{
+	} else {
 		log.info "All closed; setting virtual device as closed"
+		logDebug "Current threshold value is ${activeThreshold}"
 		device.sendEvent(name: "contact", value: "closed")
 	}
 }
@@ -138,7 +145,7 @@ def getCurrentCount() {
 			totalClosed++
 		}
     }
-    state.totalClosed = totalClosed
+    state.totalOpen = totalOpen
 	if (openList.size() == 0) {
         openList.add("None")
     }
