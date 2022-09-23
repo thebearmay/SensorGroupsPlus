@@ -21,6 +21,7 @@ definition(
     author: "Ryan Elliott",
     description: "Creates a virtual device to track a group of contact sensors.",
     category: "Convenience",
+	parent: "rle.sg+:Sensor Groups+",
 	iconUrl: "",
     iconX2Url: "")
 
