@@ -34,8 +34,7 @@ def prefContactGroup() {
 	return dynamicPage(name: "prefContactGroup", title: "Create a Contact Group", nextPage: "prefSettings", uninstall:true, install: false) {
 		section {
             label title: "Enter a name for this child app."+
-            "This will create a virtual contact sensor which reports the open/closed status based on the sensors you select."+
-            "Optionally, set a thing.", required:true
+            "This will create a virtual contact sensor which reports the open/closed status based on the sensors you select.", required:true
 		}
 	}
 }
