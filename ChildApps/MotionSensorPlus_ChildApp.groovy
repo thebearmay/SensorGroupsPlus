@@ -43,7 +43,7 @@ def prefMotionGroup() {
 def prefSettings() {
 	return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
 		section {
-			paragraph "Please choose which sensors to include in this group. When the count of active sensors is at or above the threshold, the virtual sensor will be active. When the count is below the threshold, the virtual sensor will be inactive."
+			paragraph "Please choose which sensors to include in this group. The virtual device will report status based on the configured threshold."
 
 			input "motionSensors", "capability.motionSensor", title: "Motion sensors to monitor", multiple:true, required:true
         }

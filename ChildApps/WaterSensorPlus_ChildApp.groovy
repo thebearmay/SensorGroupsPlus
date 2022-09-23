@@ -43,7 +43,7 @@ def prefWaterGroup() {
 def prefSettings() {
     return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
         section {
-            paragraph "Please choose which sensors to include in this group. When all the sensors are dry, the virtual device is dry. If any sensor is wet, the virtual device is wet."
+            paragraph "Please choose which sensors to include in this group. The virtual device will report status based on the configured threshold."
 
             input "waterSensors", "capability.waterSensor", title: "Water sensors to monitor", multiple:true, required:true
         }

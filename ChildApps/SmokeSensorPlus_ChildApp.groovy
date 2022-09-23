@@ -43,7 +43,7 @@ def prefSmokeGroup() {
 def prefSettings() {
     return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
         section {
-            paragraph "Please choose which sensors to include in this group. When all the sensors are clear, the virtual device is clear. If any sensor has detected smoke, the virtual device is detected."
+            paragraph "Please choose which sensors to include in this group. The virtual device will report status based on the configured threshold."
 
             input "smokeSensors", "capability.smokeDetector", title: "Smoke sensors to monitor", multiple:true, required:true
         }

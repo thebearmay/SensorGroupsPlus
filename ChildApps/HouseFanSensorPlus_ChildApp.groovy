@@ -1,6 +1,6 @@
 /**
  *
- * Sensor Groups+_Contact
+ * Sensor Groups+_Contacts for House Fan
  *
  * Copyright 2022 Ryan Elliott
  * 
@@ -13,17 +13,14 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * v1.0		RLE		Creation
- * v1.1     RLE     Added list attribute to show triggered devices
- * v1.2     RLE     Added threshold input and associated logic
  */
  
 definition(
-    name: "Sensor Groups+_Contact",
+    name: "Sensor Groups+_Contacts for House Fan",
     namespace: "rle.sg+",
     author: "Ryan Elliott",
     description: "Creates a virtual device to track a group of contact sensors.",
     category: "Convenience",
-	parent: "rle.sg+:Sensor Groups+",
 	iconUrl: "",
     iconX2Url: "")
 
@@ -35,7 +32,9 @@ preferences {
 def prefContactGroup() {
 	return dynamicPage(name: "prefContactGroup", title: "Create a Contact Group", nextPage: "prefSettings", uninstall:true, install: false) {
 		section {
-            label title: "Enter a name for this child app. This will create a virtual contact sensor which reports the open/closed status based on the sensors you select.", required:true
+            label title: "Enter a name for this child app."+
+            "This will create a virtual contact sensor which reports the open/closed status based on the sensors you select."+
+            "Optionally, set a thing.", required:true
 		}
 	}
 }
@@ -45,7 +44,9 @@ def prefSettings() {
 		section {
 			paragraph "Please choose which sensors to include in this group. The virtual device will report status based on the configured threshold."
 
-			input "contactSensors", "capability.contactSensor", title: "Contact sensors to monitor", multiple:true, required:true
+			input "contactSensors", "capability.contactSensor", title: "Window contact sensors to monitor", multiple:true, required:true
+
+            input "doorSensors", "capability.contactSensor", title: "Door contact sensors (optional)", multiple:true, required:false
         }
 		section {
             paragraph "Set how many sensors are required to change the status of the virtual device."
@@ -70,24 +71,28 @@ def uninstalled() {
 }
 
 def updated() {	
-    	logDebug "Updated with settings: ${settings}"
+    logDebug "Updated with settings: ${settings}"
 	unschedule()
-    	unsubscribe()
+    unsubscribe()
 	initialize()
 }
 
 def initialize() {
 	subscribe(contactSensors, "contact", contactHandler)
+	subscribe(doorSensors, "contact", doorHandler)
 	createOrUpdateChildDevice()
-    contactHandler()
+    if (doorSensors) {
+        doorHandler()
+    } else {
+        contactHandler()}
     def device = getChildDevice(state.contactDevice)
     device.sendEvent(name: "TotalCount", value: contactSensors.size())
-	device.sendEvent(name: "OpenThreshold", value: activeThreshold) 
+	device.sendEvent(name: "OpenThreshold", value: activeThreshold)
     runIn(1800,logsOff)
 }
 
 def contactHandler(evt) {
-    log.info "Contact changed, checking status count..."
+    log.info "Checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.contactDevice)
 	if (state.totalOpen >= activeThreshold)
@@ -99,6 +104,29 @@ def contactHandler(evt) {
 		log.info "All closed; setting virtual device as closed"
 		logDebug "Current threshold value is ${activeThreshold}"
 		device.sendEvent(name: "contact", value: "closed")
+	}
+}
+
+def doorHandler(evt) {
+	def device = getChildDevice(state.contactDevice)
+    def closedCount = 0
+	doorSensors.each { it ->
+		if (it.currentValue("contact") == "closed") {
+			closedCount++
+		}
+	}
+	if (closedCount >= 1) {
+		log.info "Door(s) closed; ignoring windows."
+		unsubscribe(contactSensors, "contact", contactHandler)
+		device.sendEvent(name: "TotalClosed", value: contactSensors.size())
+    	device.sendEvent(name: "TotalOpen", value: "0")
+		device.sendEvent(name: "OpenList", value: "[None]")
+        device.sendEvent(name: "contact", value: "closed")
+	} else {
+		log.info "Door(s) open; checking windows..."
+		subscribe(contactSensors, "contact", contactHandler)
+		getCurrentCount()
+        contactHandler()
 	}
 }
 
@@ -132,7 +160,7 @@ def getCurrentCount() {
 	contactSensors.each { it ->
 		if (it.currentValue("contact") == "open")
 		{
-			totalOpen++
+            totalOpen++
 			if (it.label) {
             openList.add(it.label)
             }
