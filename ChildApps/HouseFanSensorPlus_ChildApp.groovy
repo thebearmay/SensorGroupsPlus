@@ -125,7 +125,6 @@ def doorHandler(evt) {
 	} else {
 		log.info "Door(s) open; checking windows..."
 		subscribe(contactSensors, "contact", contactHandler)
-		getCurrentCount()
         contactHandler()
 	}
 }
