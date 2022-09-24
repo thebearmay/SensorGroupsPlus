@@ -109,7 +109,7 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.motionDevice == null) {
         logDebug "Creating child device"
         state.motionDevice = "motiongroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_Virtual Motion Sensor", "motiongroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "motiongroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
     } else if (childDevice && childDevice.name != app.label)
 		childDevice.name = app.label + "_device"
 }

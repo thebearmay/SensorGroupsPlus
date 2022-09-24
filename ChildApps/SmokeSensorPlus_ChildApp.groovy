@@ -109,7 +109,7 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.smokeDevice == null) {
         logDebug "Creating child device"
         state.smokeDevice = "smokegroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_Virtual Smoke Detector", "smokegroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "smokegroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
     }
     else if (childDevice && childDevice.name != (app.label + "_device"))
         childDevice.name = app.label + "_device"

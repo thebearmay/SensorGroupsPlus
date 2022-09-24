@@ -109,7 +109,7 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.carbonMonoxideDevice == null) {
         logDebug "Creating child device"
         state.carbonMonoxideDevice = "carbonMonoxidegroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_Virtual CO Detector", "carbonMonoxidegroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "carbonMonoxidegroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
     }
     else if (childDevice && childDevice.name != (app.label + "_device"))
         childDevice.name = app.label + "_device"

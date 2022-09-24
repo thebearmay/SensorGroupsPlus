@@ -109,7 +109,7 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.waterDevice == null) {
         logDebug "Creating child device"
         state.waterDevice = "watergroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_Virtual Water Sensor", "watergroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "watergroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
     }
     else if (childDevice && childDevice.name != (app.label + "_device"))
         childDevice.name = app.label + "_device"

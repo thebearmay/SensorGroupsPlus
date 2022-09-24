@@ -59,15 +59,6 @@
       "required": true,
       "oauth": false,
       "primary": false
-    },
-    {
-      "id": "610782dc-fda3-4c64-91c2-4c72f2b074fa",
-      "name": "Sensor Groups+_Contacts for House Fan",
-      "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/HouseFanSensorPlus_ChildApp.groovy",
-      "required": true,
-      "oauth": false,
-      "primary": false
     }
   ],
   "drivers": [
@@ -104,6 +95,13 @@
       "name": "Sensor Groups+_Virtual Water Sensor",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/WaterSensorPlus_Driver.groovy",
+      "required": true
+    },
+    {
+      "id": "4a49dcd9-f6b6-45a0-b5db-5d4d99eb7b64",
+      "name": "Sensor Groups+_OmniSensor",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/OmniSensorPlus_Driver.groovy",
       "required": true
     }
   ]

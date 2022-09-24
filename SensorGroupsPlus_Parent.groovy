@@ -51,7 +51,6 @@ def mainPage() {
 			section("Child Apps") {
 				app(name: "coApp+", appName: "Sensor Groups+_CO", namespace: "rle.sg+", title: "Add a new CO Sensor Group+ Instance", multiple: true)
 				app(name: "contactApp+", appName: "Sensor Groups+_Contact", namespace: "rle.sg+", title: "Add a new Contact Sensor Group+ Instance", multiple: true)
-				app(name: "contactApp+", appName: "Sensor Groups+_Contacts for House Fan", namespace: "rle.sg+", title: "Add a new Contact Sensor Group+ Instance for use with House Fans", multiple: true)
 				app(name: "motionApp+", appName: "Sensor Groups+_Motion", namespace: "rle.sg+", title: "Add a new Motion Sensor Group+ Instance", multiple: true)
 				app(name: "smokeApp+", appName: "Sensor Groups+_Smoke", namespace: "rle.sg+", title: "Add a new Smoke Sensor Group+ Instance", multiple: true)
 				app(name: "waterApp+", appName: "Sensor Groups+_Water", namespace: "rle.sg+", title: "Add a new Water Sensor Group+ Instance", multiple: true)
