@@ -1,6 +1,6 @@
 /**
  *
- * SensorGroups+
+ * Sensor Groups+
  *
  * Copyright 2022 Ryan Elliott
  * 
