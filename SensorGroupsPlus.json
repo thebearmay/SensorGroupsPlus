@@ -120,13 +120,6 @@
       "required": true
     },
     {
-      "id": "982aa0c3-fb1f-4aab-93b2-7ba538af1a9a",
-      "name": "Sensor Groups+_Virtual Smoke Detector",
-      "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/SmokeSensorPlus_Driver.groovy",
-      "required": true
-    },
-    {
       "id": "7bc91979-8488-4f59-8460-f7185d06d8a2",
       "name": "Sensor Groups+_Virtual Water Sensor",
       "namespace": "rle.sg+",
