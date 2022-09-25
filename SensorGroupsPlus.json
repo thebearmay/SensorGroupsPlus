@@ -59,6 +59,33 @@
       "required": true,
       "oauth": false,
       "primary": false
+    },
+    {
+      "id": "610782dc-fda3-4c64-91c2-4c72f2b074fa",
+      "name": "Sensor Groups+_Contacts for House Fan",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/HouseFanSensorPlus_ChildApp.groovy",
+      "required": true,
+      "oauth": false,
+      "primary": false
+    },
+    {
+      "id": "4102346d-d094-4cfc-902d-de4c394aa038",
+      "name": "Sensor Groups+_Temp",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/TempSensorPlus_ChildApp.groovy",
+      "required": true,
+      "oauth": false,
+      "primary": false
+    },
+    {
+      "id": "9ebdf1ea-d549-43b6-b4d3-294f06820ccd",
+      "name": "Sensor Groups+_Humidity",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/HumiditySensorPlus_ChildApp.groovy",
+      "required": true,
+      "oauth": false,
+      "primary": false
     }
   ],
   "drivers": [
