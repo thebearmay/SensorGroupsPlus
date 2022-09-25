@@ -28,6 +28,7 @@ metadata {
         capability "Motion Sensor"
         capability "Smoke Detector"
         capability "Water Sensor"
+        capability "Relative Humidity Measurement"
 
 
         //Contact attributes	
@@ -59,6 +60,14 @@ metadata {
         attribute "TotalDry", "number"
         attribute "WetList", "string"
         attribute "WetThreshold", "number"
+        //Humidity attributes
+        attribute "MaxHumidity", "number"
+        attribute "AverageHumidity", "number"
+        attribute "MinHumidity", "number"
+        //Tempature attributes
+        attribute "MaxTemp", "number"
+        attribute "AverageTemp", "number"
+        attribute "MinTemp", "number"
 	}
 }
 
