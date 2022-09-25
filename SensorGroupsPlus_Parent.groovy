@@ -15,6 +15,7 @@
  * v1.0		RLE		Creation
  * v1.1		RLE		Added water, smoke, and CO detectors
  * v1.2		RLE		Added temp and humidity
+ * v1.3		RLE		Made child app pages dynamic and optional
  */
  
 definition(
