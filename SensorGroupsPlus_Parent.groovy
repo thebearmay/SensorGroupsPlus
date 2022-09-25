@@ -53,11 +53,11 @@ def mainPage() {
 				paragraph "Provides options for combining multiple sensors into a single device to provide combined updates."
 			}
 			section("Child Apps") {
-                childApps.each { it ->
-                    if (it in state.allAppNames) {
-                        app(name: it+"App+", appName: it, namespace: "rle.sg+", title: "Add a new ${it} Instance", multiple: true)
+                childApps.each { kid ->
+                    if (kid in state.allAppNames) {
+                        app(name: it+"App+", appName: kid, namespace: "rle.sg+", title: "Add a new ${kid} Instance", multiple: true)
                     } else {
-                    logDebug "${it} not installed."
+                    logDebug "${kid} not installed."
 				    }
                 }
 			}
