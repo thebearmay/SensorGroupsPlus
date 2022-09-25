@@ -55,7 +55,7 @@ def mainPage() {
 			section("Child Apps") {
                 childApps.each { kid ->
                     if (kid in state.allAppNames) {
-                        app(name: it+"App+", appName: kid, namespace: "rle.sg+", title: "Add a new ${kid} Instance", multiple: true)
+                        app(name: kid+"App+", appName: kid, namespace: "rle.sg+", title: "Add a new ${kid} Instance", multiple: true)
                     } else {
                     logDebug "${kid} not installed."
 				    }
