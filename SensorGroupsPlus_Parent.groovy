@@ -39,28 +39,31 @@ def updated() {
 }
 
 def initialize() {
-	// Do nothing for now
+	runIn(1800,logsOff)
 }
 
 def mainPage() {
     dynamicPage(name: "mainPage") {
     	isInstalled()
+        getAppsList()
+        def childApps = ["Sensor Groups+_CO","Sensor Groups+_Contact","Sensor Groups+_Humidity","Sensor Groups+_Motion","Sensor Groups+_Smoke","Sensor Groups+_Switch","Sensor Groups+_Temp","Sensor Groups+_Water"]
+		logDebug "Installed apps are ${state.allAppNames}"
 		if(state.appInstalled == 'COMPLETE'){
 			section("${app.label}") {
 				paragraph "Provides options for combining multiple sensors into a single device to provide combined updates."
 			}
 			section("Child Apps") {
-				app(name: "coApp+", appName: "Sensor Groups+_CO", namespace: "rle.sg+", title: "Add a new CO Sensor Group+ Instance", multiple: true)
-				app(name: "contactApp+", appName: "Sensor Groups+_Contact", namespace: "rle.sg+", title: "Add a new Contact Sensor Group+ Instance", multiple: true)
-				app(name: "humidityApp+", appName: "Sensor Groups+_Humidity", namespace: "rle.sg+", title: "Add a new Humidity Sensor Group+ Instance", multiple: true)
-				app(name: "motionApp+", appName: "Sensor Groups+_Motion", namespace: "rle.sg+", title: "Add a new Motion Sensor Group+ Instance", multiple: true)
-				app(name: "smokeApp+", appName: "Sensor Groups+_Smoke", namespace: "rle.sg+", title: "Add a new Smoke Sensor Group+ Instance", multiple: true)
-				app(name: "switchApp+", appName: "Sensor Groups+_Switch", namespace: "rle.sg+", title: "Add a new Switch Group+ Instance", multiple: true)	
-				app(name: "tempApp+", appName: "Sensor Groups+_Temp", namespace: "rle.sg+", title: "Add a new Temp Sensor Group+ Instance", multiple: true)
-				app(name: "waterApp+", appName: "Sensor Groups+_Water", namespace: "rle.sg+", title: "Add a new Water Sensor Group+ Instance", multiple: true)
+                childApps.each { it ->
+                    if (it in state.allAppNames) {
+                        app(name: it+"App+", appName: it, namespace: "rle.sg+", title: "Add a new ${it} Instance", multiple: true)
+                    } else {
+                    logDebug "${it} not installed."
+				    }
+                }
 			}
 			section("General") {
        			label title: "Enter a name for this parent app (optional)", required: false
+				input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
  			}
 		}
 	}
@@ -74,4 +77,41 @@ def isInstalled() {
 			paragraph "Please click <b>Done</b> to install the parent app."
 		}
   	}
+}
+
+def getAppsList() {        
+	def params = [
+		uri: "http://127.0.0.1:8080/app/list",
+		textParser: true,
+		headers: [
+			Cookie: state.cookie
+		]
+	  ]
+	
+	def allAppNames = []
+	try {
+		httpGet(params) { resp ->
+			def matcherText = resp.data.text.replace("\n","").replace("\r","")
+			def matcher = matcherText.findAll(/(<tr class="app-row" data-app-id="[^<>]+">.*?<\/tr>)/).each {
+				def allFields = it.findAll(/(<td .*?<\/td>)/) // { match,f -> return f } 
+				def title = allFields[0].find(/title="([^"]+)/) { match,t -> return t.trim() }
+                allAppNames.add(title)
+			}
+		}
+	} catch (e) {
+		log.error "Error retrieving installed apps: ${e}"
+        log.error(getExceptionMessageWithLine(e))
+	}
+    state.allAppNames = allAppNames.sort()
+}
+
+def logDebug(msg) {
+    if (settings?.debugOutput) {
+        log.debug msg
+    }
+}
+
+def logsOff(){
+    log.warn "debug logging disabled..."
+    app.updateSetting("debugOutput",[value:"false",type:"bool"])
 }

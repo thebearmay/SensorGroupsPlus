@@ -1,7 +1,7 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
@@ -20,7 +20,7 @@
       "name": "Sensor Groups+_Contact",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/ContactSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -29,7 +29,7 @@
       "name": "Sensor Groups+_Motion",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/MotionSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -38,7 +38,7 @@
       "name": "Sensor Groups+_Water",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/WaterSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -47,7 +47,7 @@
       "name": "Sensor Groups+_Smoke",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/SmokeSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -56,7 +56,7 @@
       "name": "Sensor Groups+_CO",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/COSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -65,7 +65,7 @@
       "name": "Sensor Groups+_Contacts for House Fan",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/HouseFanSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -74,7 +74,7 @@
       "name": "Sensor Groups+_Temp",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/TempSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -83,7 +83,7 @@
       "name": "Sensor Groups+_Humidity",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/HumiditySensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     },
@@ -92,7 +92,7 @@
       "name": "Sensor Groups+_Switch",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/SwitchSensorPlus_ChildApp.groovy",
-      "required": true,
+      "required": false,
       "oauth": false,
       "primary": false
     }
