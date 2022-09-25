@@ -56,7 +56,8 @@ def mainPage() {
 				app(name: "smokeApp+", appName: "Sensor Groups+_Smoke", namespace: "rle.sg+", title: "Add a new Smoke Sensor Group+ Instance", multiple: true)
 				app(name: "waterApp+", appName: "Sensor Groups+_Water", namespace: "rle.sg+", title: "Add a new Water Sensor Group+ Instance", multiple: true)
 				app(name: "humidityApp+", appName: "Sensor Groups+_Humidity", namespace: "rle.sg+", title: "Add a new Humidity Sensor Group+ Instance", multiple: true)
-				app(name: "tempApp+", appName: "Sensor Groups+_Temp", namespace: "rle.sg+", title: "Add a new Temp Sensor Group+ Instance", multiple: true)				
+				app(name: "tempApp+", appName: "Sensor Groups+_Temp", namespace: "rle.sg+", title: "Add a new Temp Sensor Group+ Instance", multiple: true)
+				app(name: "switchApp+", appName: "Sensor Groups+_Switch", namespace: "rle.sg+", title: "Add a new Switch Group+ Instance", multiple: true)			
 			}
 			section("General") {
        			label title: "Enter a name for this parent app (optional)", required: false

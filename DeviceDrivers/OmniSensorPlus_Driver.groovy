@@ -16,6 +16,7 @@
  * v1.1     RLE     Added list attribute to show triggered devices
  * v1.2     RLE     Added threshold attribute
  * v1.3     RLE     Combined attributes
+ * v1.4     RLE     Added on/off for switches
  */
 
 metadata {
@@ -30,8 +31,7 @@ metadata {
         capability "Smoke Detector"
         capability "Water Sensor"
         capability "Relative Humidity Measurement"
-
-
+            
         //Contact attributes	
 		attribute "contact", "enum", ["closed", "open"]
 		attribute "TotalCount", "number"
@@ -69,6 +69,12 @@ metadata {
         attribute "MaxTemp", "number"
         attribute "AverageTemp", "number"
         attribute "MinTemp", "number"
+        //Switch attributes
+        attribute "TotalOn", "number"
+        attribute "TotalOff", "number"
+        attribute "OnList", "string"
+        attribute "OnThreshold", "number"
+        attribute "switch", "enum", ["on", "off"]
 	}
 }
 
