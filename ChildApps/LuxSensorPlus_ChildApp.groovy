@@ -1,6 +1,6 @@
 /**
  *
- * Sensor Groups+_Humidity
+ * Sensor Groups+_Lux
  *
  * Copyright 2022 Ryan Elliott
  * 
@@ -16,25 +16,25 @@
  */
  
 definition(
-    name: "Sensor Groups+_Humidity",
+    name: "Sensor Groups+_Lux",
     namespace: "rle.sg+",
     author: "Ryan Elliott",
-    description: "Creates a virtual device to track a group of humidity sensors.",
+    description: "Creates a virtual device to track a group of lux sensors.",
     category: "Convenience",
     parent: "rle.sg+:Sensor Groups+",
     iconUrl: "",
     iconX2Url: "")
 
 preferences {
-    page(name: "prefHumidityGroup")
+    page(name: "prefLuxGroup")
     page(name: "prefSettings")
 }
 
-def prefHumidityGroup() {
-	return dynamicPage(name: "prefHumidityGroup", title: "Create a Humidity Group", nextPage: "prefSettings", uninstall:true, install: false) {
+def prefLuxGroup() {
+	return dynamicPage(name: "prefLuxGroup", title: "Create a Lux Group", nextPage: "prefSettings", uninstall:true, install: false) {
 		section {
             label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual humidity sensor which reports the high, low, and average humidity based on the sensors you select.", required:true
+            "<br>This will create a virtual lux sensor which reports the high, low, and average lux based on the sensors you select.", required:true
 		}
 	}
 }
@@ -44,7 +44,7 @@ def prefSettings() {
 		section {
 			paragraph "<b>Please choose which sensors to include in this group.</b>"
 
-			input "humiditySensors", "capability.relativeHumidityMeasurement", title: "Humidity sensors to monitor", multiple:true, required:true
+			input "luxSensors", "capability.illuminanceMeasurement", title: "Lux sensors to monitor", multiple:true, required:true
             
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
@@ -71,44 +71,44 @@ def updated() {
 }
 
 def initialize() {
-	subscribe(humiditySensors, "humidity", humidityHandler)
+	subscribe(luxSensors, "illuminance", luxHandler)
     createOrUpdateChildDevice()
-    humidityHandler()	
+    luxHandler()	
 	if (debugOutput) {
 		runIn(1800,logsOff)
 	}
 }
 
-def humidityHandler(evt) {
-    log.info "Humidity sensor change; checking totals..."
-    def totalCount = humiditySensors.size()
-    def device = getChildDevice(state.humidityDevice)
+def luxHandler(evt) {
+    log.info "Lux sensor change; checking totals..."
+    def totalCount = luxSensors.size()
+    def device = getChildDevice(state.luxDevice)
     device.sendEvent(name: "TotalCount", value: totalCount)    
-    def listHumidity = []
-    def avgHumidity = 0
+    def listLux = []
+    def avgLux = 0
     def total = 0
-    humiditySensors.each {it ->
-        total = (total + it.currentHumidity)
-        listHumidity.add(it.currentHumidity)
+    luxSensors.each {it ->
+        total = (total + it.currentIlluminance)
+        listLux.add(it.currentIlluminance)
     }
-    avgHumidity = (total / totalCount).toDouble().round(1)
-    logDebug "Average humidity is ${avgHumidity}"
-    device.sendEvent(name: "AverageHumidity", value: avgHumidity)
-    minHumidity = listHumidity.min()
-    logDebug "Min humidity is ${minHumidity}"
-    device.sendEvent(name: "MinHumidity", value: minHumidity)
-    maxHumidity = listHumidity.max()
-    logDebug "Max humidity is ${maxHumidity}"
-    device.sendEvent(name: "MaxHumidity", value: maxHumidity)
+    avgLux = (total / totalCount).toDouble().round(1)
+    logDebug "Average lux is ${avgLux}"
+    device.sendEvent(name: "AverageLux", value: avgLux)
+    minLux = listLux.min()
+    logDebug "Min lux is ${minLux}"
+    device.sendEvent(name: "MinLux", value: minLux)
+    maxLux = listLux.max()
+    logDebug "Max lux is ${maxLux}"
+    device.sendEvent(name: "MaxLux", value: maxLux)
 }
 
 
 def createOrUpdateChildDevice() {
-    def childDevice = getChildDevice("humiditygroup:" + app.getId())
-    if (!childDevice || state.humidityDevice == null) {
+    def childDevice = getChildDevice("luxgroup:" + app.getId())
+    if (!childDevice || state.luxDevice == null) {
         logDebug "Creating child device"
-        state.humidityDevice = "humiditygroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "humiditygroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        state.luxDevice = "luxgroup:" + app.getId()
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "luxgroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
     } else if (childDevice && childDevice.name != app.label)
 		childDevice.name = app.label + "_device"
 }

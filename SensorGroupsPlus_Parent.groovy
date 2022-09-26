@@ -47,7 +47,15 @@ def mainPage() {
     dynamicPage(name: "mainPage") {
     	isInstalled()
         getAppsList()
-        def childApps = ["Sensor Groups+_CO","Sensor Groups+_Contact","Sensor Groups+_Humidity","Sensor Groups+_Motion","Sensor Groups+_Smoke","Sensor Groups+_Switch","Sensor Groups+_Temp","Sensor Groups+_Water"]
+        def childApps = ["Sensor Groups+_CO",
+			"Sensor Groups+_Contact",
+			"Sensor Groups+_Humidity",
+			"Sensor Groups+_Motion",
+			"Sensor Groups+_Smoke",
+			"Sensor Groups+_Switch",
+			"Sensor Groups+_Temp",
+			"Sensor Groups+_Water",
+			"Sensor Groups+_Lux"]
 		logDebug "Installed apps are ${state.allAppNames}"
 		if(state.appInstalled == 'COMPLETE'){
 			section("${app.label}") {
@@ -94,7 +102,7 @@ def getAppsList() {
 		httpGet(params) { resp ->
 			def matcherText = resp.data.text.replace("\n","").replace("\r","")
 			def matcher = matcherText.findAll(/(<tr class="app-row" data-app-id="[^<>]+">.*?<\/tr>)/).each {
-				def allFields = it.findAll(/(<td .*?<\/td>)/) // { match,f -> return f } 
+				def allFields = it.findAll(/(<td .*?<\/td>)/)
 				def title = allFields[0].find(/title="([^"]+)/) { match,t -> return t.trim() }
                 allAppNames.add(title)
 			}

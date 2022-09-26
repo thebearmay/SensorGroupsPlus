@@ -35,7 +35,8 @@ preferences {
 def prefMotionGroup() {
 	return dynamicPage(name: "prefMotionGroup", title: "Create a Motion Group", nextPage: "prefSettings", uninstall:true, install: false) {
 		section {
-            label title: "Enter a name for this child app. This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select.", required:true
+            label title: "<b>***Enter a name for this child app.***</b>"+
+            "<br>This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select.", required:true
 		}
 	}
 }
@@ -43,7 +44,8 @@ def prefMotionGroup() {
 def prefSettings() {
 	return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
 		section {
-			paragraph "Please choose which sensors to include in this group. The virtual device will report status based on the configured threshold."
+			paragraph "<b>Please choose which sensors to include in this group.</b>"+
+            "<br>The virtual device will report status based on the configured threshold."
 
 			input "motionSensors", "capability.motionSensor", title: "Motion sensors to monitor", multiple:true, required:true
         }

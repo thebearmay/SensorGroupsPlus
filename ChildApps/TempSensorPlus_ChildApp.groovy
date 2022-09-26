@@ -42,7 +42,7 @@ def prefTempGroup() {
 def prefSettings() {
 	return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
 		section {
-			paragraph "Please choose which sensors to include in this group. The virtual device will report status based on the configured threshold."
+			paragraph "<b>Please choose which sensors to include in this group.</b>"
 
 			input "tempSensors", "capability.temperatureMeasurement", title: "Temp sensors to monitor", multiple:true, required:true
             

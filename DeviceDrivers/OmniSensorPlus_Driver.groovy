@@ -69,6 +69,10 @@ metadata {
         attribute "MaxTemp", "number"
         attribute "AverageTemp", "number"
         attribute "MinTemp", "number"
+        //Lux attributes
+        attribute "MaxLux", "number"
+        attribute "AverageLux", "number"
+        attribute "MinLux", "number"
         //Switch attributes
         attribute "TotalOn", "number"
         attribute "TotalOff", "number"

@@ -42,7 +42,8 @@ def prefSwitchGroup() {
 def prefSettings() {
     return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
 		section {
-			paragraph "Please choose which switches to include in this group. The virtual device will report status based on the configured threshold."
+			paragraph "<b>Please choose which sensors to include in this group.</b>"+
+            "<br>The virtual device will report status based on the configured threshold."
 
 			input "switchSensors", "capability.switch" , title: "Switch sensors to monitor", multiple:true, required:true
         }
