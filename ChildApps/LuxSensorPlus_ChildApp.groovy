@@ -91,7 +91,7 @@ def luxHandler(evt) {
         total = (total + it.currentIlluminance)
         listLux.add(it.currentIlluminance)
     }
-    avgLux = (total / totalCount).toDouble().round(1)
+    avgLux = (total / totalCount).toDouble().round()
     logDebug "Average lux is ${avgLux}"
     device.sendEvent(name: "AverageLux", value: avgLux)
     minLux = listLux.min()
