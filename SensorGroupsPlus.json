@@ -1,7 +1,7 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "1.7.5",
+  "version": "1.8.0",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
@@ -56,6 +56,15 @@
       "name": "Sensor Groups+_Motion",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/MotionSensorPlus_ChildApp.groovy",
+      "required": false,
+      "oauth": false,
+      "primary": false
+    },
+    {
+      "id": "2a078708-e4cb-4813-8c63-7c7f578392af",
+      "name": "Sensor Groups+_Power",
+      "namespace": "rle.sg+",
+      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/PowerSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
