@@ -17,6 +17,7 @@
  * v1.2     RLE     Added threshold attribute
  * v1.3     RLE     Combined attributes
  * v1.4     RLE     Added on/off for switches
+ * v1.5     RLE     Added missing Lux capability; added power
  */
 
 metadata {
@@ -31,6 +32,8 @@ metadata {
         capability "Smoke Detector"
         capability "Water Sensor"
         capability "Relative Humidity Measurement"
+        capability "PowerMeter"
+        capability "IlluminanceMeasurement"
             
         //Contact attributes	
 		attribute "contact", "enum", ["closed", "open"]
@@ -79,6 +82,8 @@ metadata {
         attribute "OnList", "string"
         attribute "OnThreshold", "number"
         attribute "switch", "enum", ["on", "off"]
+        //Power attributes
+        attribute "TotalPower", "number"
 	}
 }
 

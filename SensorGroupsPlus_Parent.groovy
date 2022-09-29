@@ -55,14 +55,15 @@ def mainPage() {
 			"Sensor Groups+_Switch",
 			"Sensor Groups+_Temp",
 			"Sensor Groups+_Water",
-			"Sensor Groups+_Lux"]
+			"Sensor Groups+_Lux",
+			"Sensor Groups+_Power"]
 		logDebug "Installed apps are ${state.allAppNames}"
 		if(state.appInstalled == 'COMPLETE'){
 			section("${app.label}") {
 				paragraph "Provides options for combining multiple sensors into a single device to provide combined updates."
 			}
 			section("Child Apps") {
-                childApps.each { kid ->
+                childApps.sort().each { kid ->
                     if (kid in state.allAppNames) {
                         app(name: kid+"App+", appName: kid, namespace: "rle.sg+", title: "Add a new ${kid} Instance", multiple: true)
                     } else {
