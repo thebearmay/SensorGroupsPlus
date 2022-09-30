@@ -34,6 +34,7 @@ metadata {
         capability "Relative Humidity Measurement"
         capability "PowerMeter"
         capability "IlluminanceMeasurement"
+        capability "Switch"
             
         //Contact attributes	
 		attribute "contact", "enum", ["closed", "open"]
@@ -93,4 +94,16 @@ def installed() {
 
 def updated() {
 	log.info "updated..."
+}
+
+def on() {
+    def descriptionText = "The on command for SG+_OmniSensors does nothing"
+    log.warn "${descriptionText}"
+    sendEvent(name: "TheButtonsDoNothing", value: "The on button does nothing", descriptionText: descriptionText)
+}
+
+def off() {
+    def descriptionText = "The off command for SG+_OmniSensors does nothing"
+    log.warn "${descriptionText}"
+    sendEvent(name: "TheButtonsDoNothing", value: "The off button does nothing", descriptionText: descriptionText)
 }
