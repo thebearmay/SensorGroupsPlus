@@ -71,7 +71,7 @@ def updated() {
 }
 
 def initialize() {
-	subscribe(tempSensors, "temp", tempHandler)
+	subscribe(tempSensors, "temperature", tempHandler)
     createOrUpdateChildDevice()
     tempHandler()	
 	if (debugOutput) {
