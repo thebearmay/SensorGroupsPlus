@@ -18,6 +18,7 @@
  * v1.3     RLE     Combined attributes
  * v1.4     RLE     Added on/off for switches
  * v1.5     RLE     Added missing Lux capability; added power
+ * v1.6     RLE     Added device listing for the power sensor
  */
 
 metadata {
@@ -85,6 +86,7 @@ metadata {
         attribute "switch", "enum", ["on", "off"]
         //Power attributes
         attribute "TotalPower", "number"
+        attribute "PowerDevices", "json"
 	}
 }
 

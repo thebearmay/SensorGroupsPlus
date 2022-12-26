@@ -13,6 +13,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * v1.0		RLE		Creation
+ * v1.1     RLE     Cleaned up logging; added device listing to child device
  */
  
 definition(
@@ -86,6 +87,7 @@ def powerHandler(evt) {
     device.sendEvent(name: "TotalCount", value: totalCount)
     def totalPower = 0
     def newPower = 0
+    def powerDevices = []
     powerSensors.each {it ->
         if (it.label) {
                 newName = it.label
@@ -99,11 +101,15 @@ def powerHandler(evt) {
         }
         if (!it.currentPower) {
             newPower = 0
-            log.warn "${newName} does not have a value for power"
+            logDebug "${newName} does not have a value for power"
         }
         logDebug "${newName} current power is ${newPower}"
+        powerDevices.add(newName+":"+newPower)
     }
-    logDebug "Total power is ${totalPower}"
+    powerDevices.sort()
+    groovy.json.JsonOutput.toJson(powerDevices)
+    log.info "Total power is ${totalPower}"
+    device.sendEvent(name: "PowerDevices", value: powerDevices, unit: "W")
     device.sendEvent(name: "TotalPower", value: totalPower, unit: "W")
 }
 
