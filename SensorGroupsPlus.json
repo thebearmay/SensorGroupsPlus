@@ -1,11 +1,11 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "1.8.3",
+  "version": "1.9.0",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
-  "releaseNotes": "The deprecated child device drivers have been removed. The only driver that should be installed is the 'Omnisensor Plus driver'. Please be sure to remove the others.",
+  "releaseNotes": "The deprecated child device drivers have been removed. The only driver that should be installed is the 'Omnisensor Plus driver'. Please be sure to remove the others. UI Overhaul",
   "apps": [
     {
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",
@@ -102,15 +102,6 @@
       "name": "Sensor Groups+_Temp",
       "namespace": "rle.sg+",
       "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/TempSensorPlus_ChildApp.groovy",
-      "required": false,
-      "oauth": false,
-      "primary": false
-    },
-    {
-      "id": "610782dc-fda3-4c64-91c2-4c72f2b074fa",
-      "name": "Sensor Groups+_Contacts for House Fan",
-      "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/HouseFanSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false

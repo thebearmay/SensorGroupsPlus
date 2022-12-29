@@ -27,26 +27,22 @@ definition(
     iconX2Url: "")
 
 preferences {
-    page(name: "prefPowerGroup")
-    page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefPowerGroup() {
-	return dynamicPage(name: "prefPowerGroup", title: "Create a Power Group", nextPage: "prefSettings", uninstall:true, install: false) {
-		section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual power sensor which reports the total power based on the sensors you select.", required:true
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual power sensor which reports the total power based on the sensors you select.", required:true,width:6
 		}
-	}
-}
 
-def prefSettings() {
-	return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-		section {
+		section(getFormat("header","<b>Device Selection</b>")) {
 			paragraph "<b>Please choose which sensors to include in this group.</b>"
-
-			input "powerSensors", "capability.powerMeter", title: "Power sensors to monitor", multiple:true, required:true
-            
+			input "powerSensors", "capability.powerMeter", title: "Power sensors to monitor", multiple:true, required:true,width:6
+        }
+        
+        section(getFormat("header","<b>Options</b>")) { 
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -89,12 +85,7 @@ def powerHandler(evt) {
     def newPower = 0
     def powerDevices = []
     powerSensors.each {it ->
-        if (it.label) {
-                newName = it.label
-        }
-        else if (!it.label) {
-                newName = it.name
-        } 
+        def newName = it.displayName
         if (it.currentPower) {
             totalPower = (totalPower + it.currentPower)
             newPower = it.currentPower
@@ -133,4 +124,8 @@ def logDebug(msg) {
 def logsOff(){
     log.warn "debug logging disabled..."
     app.updateSetting("debugOutput",[value:"false",type:"bool"])
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }

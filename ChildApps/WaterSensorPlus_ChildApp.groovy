@@ -28,32 +28,26 @@ definition(
         iconX2Url: "")
 
 preferences {
-    page(name: "prefWaterGroup")
-    page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefWaterGroup() {
-    return dynamicPage(name: "prefWaterGroup", title: "Create a Water Sensor Group", nextPage: "prefSettings", uninstall:true, install: false) {
-        section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual water sensor which reports the wet/dry status based on the sensors you select.", required:true
-        }
-    }
-}
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual water sensor which reports the wet/dry status based on the sensors you select.", required:true,width:6
+		}
 
-def prefSettings() {
-    return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-        section {
-            paragraph "<b>Please choose which sensors to include in this group.</b>"+
+		section(getFormat("header","<b>Device Selection</b>")) {
+			paragraph "<b>Please choose which sensors to include in this group.</b>"+
             "<br>The virtual device will report status based on the configured threshold."
 
-            input "waterSensors", "capability.waterSensor", title: "Water sensors to monitor", multiple:true, required:true
+            input "waterSensors", "capability.waterSensor", title: "Water sensors to monitor", multiple:true, required:true,width:6
         }
-        section {
-            paragraph "Set how many sensors are required to change the status of the virtual device."
-            
-            input "activeThreshold", "number", title: "How many sensors must be wet before the group is wet? Leave set to one if any sensor being wet should make the group wet.", required:false, defaultValue: 1
-            
+
+		section(getFormat("header","<b>Options</b>")) {
+            input "activeThreshold", "number", title: "<b>How many sensors must be wet before the group is wet?</b><br>Leave set to one if any sensor being wet should make the group wet.", required:false, defaultValue: 1,width:6
+			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -85,7 +79,9 @@ def initialize() {
     def device = getChildDevice(state.waterDevice)
     device.sendEvent(name: "TotalCount", value: waterSensors.size())
     device.sendEvent(name: "WetThreshold", value: activeThreshold)
-    runIn(1800,logsOff)
+	if (debugOutput) {
+		runIn(1800,logsOff)
+	}
 }
 
 def waterHandler(evt) {
@@ -111,10 +107,8 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.waterDevice == null) {
         logDebug "Creating child device"
         state.waterDevice = "watergroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "watergroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "watergroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
     }
-    else if (childDevice && childDevice.name != (app.label + "_device"))
-        childDevice.name = app.label + "_device"
 }
 
 def logDebug(msg) {
@@ -137,12 +131,7 @@ def getCurrentCount() {
         if (it.currentValue("water") == "wet")
         {
             totalWet++
-			if (it.label) {
-                wetList.add(it.label)
-            }
-            else if (!it.label) {
-                wetList.add(it.name)
-            }
+			wetList.add(it.displayName)
         }
         else if (it.currentValue("water") == "dry")
         {
@@ -159,4 +148,8 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalDry", value: totalDry)
     device.sendEvent(name: "TotalWet", value: totalWet)
     device.sendEvent(name: "WetList", value: state.wetList)
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }

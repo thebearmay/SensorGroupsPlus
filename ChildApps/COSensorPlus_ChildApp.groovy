@@ -28,32 +28,25 @@ definition(
         iconX2Url: "")
 
 preferences {
-    page(name: "prefCOGroup")
-    page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefCOGroup() {
-    return dynamicPage(name: "prefCOGroup", title: "Create a Carbon Monoxide Sensor Group", nextPage: "prefSettings", uninstall:true, install: false) {
-        section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual CO sensor which reports the detected/clear status based on the sensors you select.", required:true
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual CO sensor which reports the detected/clear status based on the sensors you select.", required:true,width:6
         }
-    }
-}
 
-def prefSettings() {
-    return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-        section {
+        section(getFormat("header","<b>Device Selection</b>")) {
             paragraph "<b>Please choose which sensors to include in this group.</b>"+
             "<br>The virtual device will report status based on the configured threshold."
-
-            input "carbonMonoxideSensors", "capability.carbonMonoxideDetector", title: "CO sensors to monitor", multiple:true, required:true
+            input "carbonMonoxideSensors", "capability.carbonMonoxideDetector", title: "CO sensors to monitor", multiple:true, required:true,width:6
         }
-        section {
-            paragraph "Set how many sensors are required to change the status of the virtual device."
-            
-            input "activeThreshold", "number", title: "How many sensors must detect CO before the group is active? Leave set to one if CO detected by any sensor should change the group to detected.", required:false, defaultValue: 1
-            
+
+        section(getFormat("header","<b>Options</b>")) {
+            input "activeThreshold", "number", title: "<b>Threshold: How many sensors must detect CO before the group is active?</b><br>Leave set to one if CO detected by any sensor should change the group to detected.", required:false, defaultValue: 1,width:6
+            paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -85,7 +78,9 @@ def initialize() {
     def device = getChildDevice(state.carbonMonoxideDevice)
     device.sendEvent(name: "TotalCount", value: carbonMonoxideSensors.size())
     device.sendEvent(name: "CODetectedThreshold", value: activeThreshold)
-    runIn(1800,logsOff)
+	if (debugOutput) {
+		runIn(1800,logsOff)
+	}
 }
 
 def carbonMonoxideHandler(evt) {
@@ -111,10 +106,8 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.carbonMonoxideDevice == null) {
         logDebug "Creating child device"
         state.carbonMonoxideDevice = "carbonMonoxidegroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "carbonMonoxidegroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "carbonMonoxidegroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
     }
-    else if (childDevice && childDevice.name != (app.label + "_device"))
-        childDevice.name = app.label + "_device"
 }
 
 def logDebug(msg) {
@@ -137,13 +130,8 @@ def getCurrentCount() {
         if (it.currentValue("carbonMonoxide") == "detected")
         {
             totalDetected++
-			if (it.label) {
-                coDetectedList.add(it.label)
+            coDetectedList.add(it.displayName)
             }
-            else if (!it.label) {
-                coDetectedList.add(it.name)
-            }
-        }
         else if (it.currentValue("carbonMonoxide") == "clear")
         {
             totalClear++
@@ -159,4 +147,8 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalDetected", value: totalDetected)
     device.sendEvent(name: "TotalClear", value: totalClear)
     device.sendEvent(name: "CODetectedList", value: state.coDetectedList)
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }

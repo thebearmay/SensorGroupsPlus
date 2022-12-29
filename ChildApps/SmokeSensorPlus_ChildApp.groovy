@@ -28,32 +28,25 @@ definition(
         iconX2Url: "")
 
 preferences {
-    page(name: "prefSmokeGroup")
-    page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefSmokeGroup() {
-    return dynamicPage(name: "prefSmokeGroup", title: "Create a Smoke Sensor Group", nextPage: "prefSettings", uninstall:true, install: false) {
-        section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual smoke sensor which reports the detected/clear status based on the sensors you select.", required:true
-        }
-    }
-}
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual smoke sensor which reports the detected/clear status based on the sensors you select.", required:true,width:6
+		}
 
-def prefSettings() {
-    return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-        section {
-            paragraph "<b>Please choose which sensors to include in this group.</b>"+
+		section(getFormat("header","<b>Device Selection</b>")) {
+			paragraph "<b>Please choose which sensors to include in this group.</b>"+
             "<br>The virtual device will report status based on the configured threshold."
 
             input "smokeSensors", "capability.smokeDetector", title: "Smoke sensors to monitor", multiple:true, required:true
         }
-        section {
-            paragraph "Set how many sensors are required to change the status of the virtual device."
-            
-            input "activeThreshold", "number", title: "How many sensors must detect smoke before the group is detected? Leave set to one if smoke detected by any sensor should change the group to detected.", required:false, defaultValue: 1
-            
+        section(getFormat("header","<b>Options</b>")) {
+            input "activeThreshold", "number", title: "<b>Threshold: How many sensors must detect smoke before the group is detected?</b><br>Leave set to one if smoke detected by any sensor should change the group to detected.", required:false, defaultValue: 1,width:6
+            paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -85,7 +78,9 @@ def initialize() {
     def device = getChildDevice(state.smokeDevice)
     device.sendEvent(name: "TotalCount", value: smokeSensors.size())
     device.sendEvent(name: "SmokeDetectedThreshold", value: activeThreshold)
-    runIn(1800,logsOff)
+	if (debugOutput) {
+		runIn(1800,logsOff)
+	}
 }
 
 def smokeHandler(evt) {
@@ -111,10 +106,8 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.smokeDevice == null) {
         logDebug "Creating child device"
         state.smokeDevice = "smokegroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "smokegroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "smokegroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
     }
-    else if (childDevice && childDevice.name != (app.label + "_device"))
-        childDevice.name = app.label + "_device"
 }
 
 def logDebug(msg) {
@@ -137,12 +130,7 @@ def getCurrentCount() {
         if (it.currentValue("smoke") == "detected")
         {
             totalDetected++
-			if (it.label) {
-                smokeDetectedList.add(it.label)
-            }
-            else if (!it.label) {
-                smokeDetectedList.add(it.name)
-            }
+            smokeDetectedList.add(it.displayName)
         }
         else if (it.currentValue("smoke") == "clear")
         {
@@ -159,4 +147,8 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalDetected", value: totalDetected)
     device.sendEvent(name: "TotalClear", value: totalClear)
     device.sendEvent(name: "SmokeDetectedList", value: state.smokeDetectedList)
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }

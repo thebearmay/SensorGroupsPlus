@@ -28,32 +28,29 @@ definition(
     iconX2Url: "")
 
 preferences {
-    page(name: "prefMotionGroup")
-    page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefMotionGroup() {
-	return dynamicPage(name: "prefMotionGroup", title: "Create a Motion Group", nextPage: "prefSettings", uninstall:true, install: false) {
-		section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select.", required:true
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select.", required:true,width:6
 		}
-	}
-}
 
-def prefSettings() {
-	return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-		section {
+		section(getFormat("header","<b>Device Selection</b>")) {
 			paragraph "<b>Please choose which sensors to include in this group.</b>"+
             "<br>The virtual device will report status based on the configured threshold."
 
-			input "motionSensors", "capability.motionSensor", title: "Motion sensors to monitor", multiple:true, required:true
+			input "motionSensors", "capability.motionSensor", title: "Motion sensors to monitor", multiple:true, required:true,width:6
         }
-        section {
-            paragraph "Set how many sensors are required to change the status of the virtual device."
-            
-            input "activeThreshold", "number", title: "How many sensors must be active before the group is active? Leave set to one if any motion sensor active should make the group active.", required:false, defaultValue: 1
-            
+
+        section(getFormat("header","<b>Options</b>")) {
+            input "activeThreshold", "number", title: "<b>Threshold: How many sensors must be active before the group is active?</b><br>Leave set to one if any motion sensor active should make the group active.", required:false, defaultValue: 1,width:6
+			paragraph ""
+			input "delayActive", "number", title: "<b>Add a delay before activating the group device?</b><br>Optional, in seconds", required:false,width:6
+			input "delayInactive", "number", title: "<b>Add a delay before deactivating the group device?</b><br>Optional, in seconds", required:false,width:6
+			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -81,8 +78,9 @@ def updated() {
 def initialize() {
 	subscribe(motionSensors, "motion", motionHandler)
     createOrUpdateChildDevice()
-    motionHandler()
     def device = getChildDevice(state.motionDevice)
+    getCurrentCount()
+    if (state.totalActive >= activeThreshold) {devActive()} else {devInactive()}
 	device.sendEvent(name: "TotalCount", value: motionSensors.size())
     device.sendEvent(name: "ActiveThreshold", value: activeThreshold) 
 	if (debugOutput) {
@@ -94,15 +92,26 @@ def motionHandler(evt) {
     log.info "Motion sensor change; checking totals..."
     def device = getChildDevice(state.motionDevice)
     getCurrentCount()
-    if (state.totalActive >= activeThreshold) {
-        log.info "Active threshold met; setting group device as active"
-        logDebug "Current threshold value is ${activeThreshold}"
-        device.sendEvent(name: "motion", value: "active", descriptionText: "The detected devices are ${state.activeList}")
-    } else {
-        log.info "Active threshold not met; setting group device as inactive"
-        logDebug "Current threshold value is ${activeThreshold}"
-        device.sendEvent(name: "motion", value: "inactive")
-    }
+    def newDelayActive = delayActive ?: 0
+	def newDelayInactive = delayInactive ?: 0
+    if (state.totalActive >= activeThreshold) 
+    {
+		if(newDelayActive >= 1) {
+			logDebug "Active threshold met; delaying ${newDelayActive} seconds"
+			unschedule(devInactive)
+			runIn(newDelayActive,devActive)
+		} else {
+			devActive()
+		}
+	} else {
+		if(newDelayInactive >= 1) {
+			logDebug "Active threshold not met; delaying ${newDelayInactive} seconds"
+			unschedule(devActive)
+			runIn(newDelayInactive,devInactive)
+		} else {
+			devInactive()
+		}
+	}
 }
 
 
@@ -111,20 +120,8 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.motionDevice == null) {
         logDebug "Creating child device"
         state.motionDevice = "motiongroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "motiongroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
-    } else if (childDevice && childDevice.name != app.label)
-		childDevice.name = app.label + "_device"
-}
-
-def logDebug(msg) {
-    if (settings?.debugOutput) {
-		log.debug msg
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "motiongroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
     }
-}
-
-def logsOff(){
-    log.warn "debug logging disabled..."
-    app.updateSetting("debugOutput",[value:"false",type:"bool"])
 }
 
 def getCurrentCount() {
@@ -136,12 +133,7 @@ def getCurrentCount() {
         if (it.currentValue("motion") == "active") 
         {
             totalActive++
-			if (it.label) {
-                activeList.add(it.label)
-            }
-            else if (!it.label) {
-                activeList.add(it.name)
-            }
+            activeList.add(it.displayName)
         } 
         else if (it.currentValue("motion") == "inactive") 
         {
@@ -158,4 +150,33 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalActive", value: totalActive)
     device.sendEvent(name: "TotalInactive", value: totalInactive)
     device.sendEvent(name: "ActiveList", value: state.activeList)
+}
+
+def devActive() {
+    def device = getChildDevice(state.motionDevice)
+    log.info "Active threshold met; setting group device as active"
+    logDebug "Current threshold value is ${activeThreshold}"
+    device.sendEvent(name: "motion", value: "active", descriptionText: "The detected devices are ${state.activeList}")
+}
+
+def devInactive() {
+	def device = getChildDevice(state.motionDevice)
+	log.info "Active threshold not met; setting group device as inactive"
+    logDebug "Current threshold value is ${activeThreshold}"
+    device.sendEvent(name: "motion", value: "inactive")
+}
+
+def logDebug(msg) {
+    if (settings?.debugOutput) {
+		log.debug msg
+    }
+}
+
+def logsOff(){
+    log.warn "debug logging disabled..."
+    app.updateSetting("debugOutput",[value:"false",type:"bool"])
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }

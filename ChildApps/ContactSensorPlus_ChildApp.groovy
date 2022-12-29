@@ -51,6 +51,7 @@ def mainPage() {
 			paragraph ""
 			input "delayActive", "number", title: "<b>Add a delay before activating the group device?</b><br>Optional, in seconds", required:false,width:6
 			input "delayInactive", "number", title: "<b>Add a delay before deactivating the group device?</b><br>Optional, in seconds", required:false,width:6
+			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
 	}
@@ -78,11 +79,14 @@ def updated() {
 def initialize() {
 	subscribe(contactSensors, "contact", contactHandler)
 	createOrUpdateChildDevice()
-    contactHandler()
     def device = getChildDevice(state.contactDevice)
+	getCurrentCount()
+	if (state.totalOpen >= activeThreshold) {devActive()} else {devInactive()}
     device.sendEvent(name: "TotalCount", value: contactSensors.size())
 	device.sendEvent(name: "OpenThreshold", value: activeThreshold) 
-    runIn(1800,logsOff)
+	if (debugOutput) {
+		runIn(1800,logsOff)
+	}
 }
 
 def contactHandler(evt) {
@@ -117,8 +121,6 @@ def createOrUpdateChildDevice() {
 		state.contactDevice = "contactgroup:" + app.getId()
 		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "contactgroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
     }
-	else if (childDevice && childDevice.name != (app.label))
-		childDevice.name = app.label
 }
 
 def getCurrentCount() {

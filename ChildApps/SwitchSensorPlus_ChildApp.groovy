@@ -83,7 +83,9 @@ def initialize() {
     def device = getChildDevice(state.switchDevice)
     device.sendEvent(name: "TotalCount", value: switchSensors.size())
 	device.sendEvent(name: "OnThreshold", value: activeThreshold) 
-    runIn(1800,logsOff)
+	if (debugOutput) {
+		runIn(1800,logsOff)
+	}
 }
 
 def switchHandler(evt) {
@@ -133,12 +135,7 @@ def getCurrentCount() {
 		if (it.currentValue("switch") == "on")
 		{
 			totalOn++
-			if (it.label) {
-            onList.add(it.label)
-            }
-            else if (!it.label) {
-                onList.add(it.name)
-            }
+			onList.add(it.displayName)
 		}
 		else if (it.currentValue("switch") == "off")
 		{
@@ -155,4 +152,8 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalOff", value: totalOff)
     device.sendEvent(name: "TotalOn", value: totalOn)
 	device.sendEvent(name: "OnList", value: state.onList)
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }

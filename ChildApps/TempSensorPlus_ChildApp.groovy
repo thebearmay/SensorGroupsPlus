@@ -26,26 +26,22 @@ definition(
     iconX2Url: "")
 
 preferences {
-    page(name: "prefTempGroup")
-    page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefTempGroup() {
-	return dynamicPage(name: "prefTempGroup", title: "Create a Temp Group", nextPage: "prefSettings", uninstall:true, install: false) {
-		section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual temp sensor which reports the high, low, and average temp based on the sensors you select.", required:true
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual temp sensor which reports the high, low, and average temp based on the sensors you select.", required:true,width:6
 		}
-	}
-}
 
-def prefSettings() {
-	return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-		section {
+		section(getFormat("header","<b>Device Selection</b>")) {
 			paragraph "<b>Please choose which sensors to include in this group.</b>"
+			input "tempSensors", "capability.temperatureMeasurement", title: "Temp sensors to monitor", multiple:true, required:true, width:6
+        }
 
-			input "tempSensors", "capability.temperatureMeasurement", title: "Temp sensors to monitor", multiple:true, required:true
-            
+		section(getFormat("header","<b>Options</b>")) {     
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
     }
@@ -108,9 +104,8 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.tempDevice == null) {
         logDebug "Creating child device"
         state.tempDevice = "tempgroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "tempgroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
-    } else if (childDevice && childDevice.name != app.label)
-		childDevice.name = app.label + "_device"
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "tempgroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
+    }
 }
 
 def logDebug(msg) {
@@ -122,4 +117,8 @@ def logDebug(msg) {
 def logsOff(){
     log.warn "debug logging disabled..."
     app.updateSetting("debugOutput",[value:"false",type:"bool"])
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }
