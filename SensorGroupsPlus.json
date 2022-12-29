@@ -5,7 +5,7 @@
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
-  "releaseNotes": "The deprecated child device drivers have been removed. The only driver that should be installed is the 'Omnisensor Plus driver'. Please be sure to remove the others. UI Overhaul",
+  "releaseNotes": "1.8.2 - The deprecated child device drivers have been removed. The only driver that should be installed is the 'Omnisensor Plus driver'.Please be sure to remove the others.\n1.9.1 - UI Overhaul",
   "apps": [
     {
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",
