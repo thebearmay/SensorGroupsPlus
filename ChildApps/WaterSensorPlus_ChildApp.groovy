@@ -15,6 +15,7 @@
  * v1.0		RLE		Creation
  * v1.1     RLE     Added list attribute to show triggered devices
  * v1.2     RLE     Added threshold input and associated logic
+ * v1.3		RLE		UI update
  */
 
 definition(

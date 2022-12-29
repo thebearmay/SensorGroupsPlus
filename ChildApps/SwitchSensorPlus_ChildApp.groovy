@@ -13,6 +13,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * v1.0		RLE		Creation
+ * v1.1		RLE		UI update
  */
  
 definition(
@@ -26,32 +27,25 @@ definition(
     iconX2Url: "")
 
 preferences {
-    page(name: "prefSwitchGroup")
-	page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefSwitchGroup() {
-	return dynamicPage(name: "prefSwitchGroup", title: "Create a Switch Group", nextPage: "prefSettings", uninstall:true, install: false) {
-		section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual switch sensor which reports the on/off status based on the switches you select.", required:true
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual switch sensor which reports the on/off status based on the switches you select.", required:true,width:6
 		}
-	}
-}
 
-def prefSettings() {
-    return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-		section {
+		section(getFormat("header","<b>Device Selection</b>")) {
 			paragraph "<b>Please choose which sensors to include in this group.</b>"+
             "<br>The virtual device will report status based on the configured threshold."
 
-			input "switchSensors", "capability.switch" , title: "Switch sensors to monitor", multiple:true, required:true
+			input "switchSensors", "capability.switch" , title: "Switch sensors to monitor", multiple:true, required:true,width:6
         }
-		section {
-            paragraph "Set how many sensors are required to change the status of the virtual device."
-            
-            input "activeThreshold", "number", title: "How many sensors must be on before the group is on? Leave set to one if any switch on should make the group on.", required:false, defaultValue: 1
-            
+		section(getFormat("header","<b>Options</b>")) {
+            input "activeThreshold", "number", title: "<b>How many sensors must be on before the group is on?</b><br>Leave set to one if any switch on should make the group on.", required:false, defaultValue: 1
+            paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
 	}
@@ -109,21 +103,8 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.switchDevice == null) {
         logDebug "Creating child device"
 		state.switchDevice = "switchgroup:" + app.getId()
-		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "switchgroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "switchgroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
     }
-	else if (childDevice && childDevice.name != (app.label + "_device"))
-		childDevice.name = app.label + "_device"
-}
-
-def logDebug(msg) {
-    if (settings?.debugOutput) {
-		log.debug msg
-	}
-}
-
-def logsOff(){
-    log.warn "debug logging disabled..."
-    app.updateSetting("debugOutput",[value:"false",type:"bool"])
 }
 
 def getCurrentCount() {
@@ -152,6 +133,17 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalOff", value: totalOff)
     device.sendEvent(name: "TotalOn", value: totalOn)
 	device.sendEvent(name: "OnList", value: state.onList)
+}
+
+def logDebug(msg) {
+    if (settings?.debugOutput) {
+		log.debug msg
+	}
+}
+
+def logsOff(){
+    log.warn "debug logging disabled..."
+    app.updateSetting("debugOutput",[value:"false",type:"bool"])
 }
 
 def getFormat(type, myText="") {

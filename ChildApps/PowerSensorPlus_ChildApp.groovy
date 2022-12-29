@@ -14,6 +14,7 @@
  *
  * v1.0		RLE		Creation
  * v1.1     RLE     Cleaned up logging; added device listing to child device
+ * v1.2		RLE		UI update
  */
  
 definition(
