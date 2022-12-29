@@ -15,6 +15,7 @@
  * v1.0		RLE		Creation
  * v1.1     RLE     Added list attribute to show triggered devices
  * v1.2     RLE     Added threshold input and associated logic
+ * v1.3		RLE		Added switch attribute to follow contact attribute; updated UI; added delays for active/inactive
  */
  
 definition(
@@ -28,32 +29,28 @@ definition(
     iconX2Url: "")
 
 preferences {
-    page(name: "prefContactGroup")
-	page(name: "prefSettings")
+    page(name: "mainPage")
 }
 
-def prefContactGroup() {
-	return dynamicPage(name: "prefContactGroup", title: "Create a Contact Group", nextPage: "prefSettings", uninstall:true, install: false) {
-		section {
-            label title: "<b>***Enter a name for this child app.***</b>"+
-            "<br>This will create a virtual contact sensor which reports the open/closed status based on the sensors you select.", required:true
+def mainPage() {
+	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+		section(getFormat("header","<b>App Name</b>")) {
+            label title: "<b>Enter a name for this child app.</b>"+
+            "<br>This will create a virtual contact sensor which reports the open/closed status based on the sensors you select.", required:true,width:6
 		}
-	}
-}
 
-def prefSettings() {
-    return dynamicPage(name: "prefSettings", title: "", install: true, uninstall: true) {
-		section {
+		section(getFormat("header","<b>Device Selection</b>")) {
 			paragraph "<b>Please choose which sensors to include in this group.</b>"+
             "<br>The virtual device will report status based on the configured threshold."
 
-			input "contactSensors", "capability.contactSensor", title: "Contact sensors to monitor", multiple:true, required:true
+			input "contactSensors", "capability.contactSensor", title: "Contact sensors to monitor", multiple:true, required:true,width:6
         }
-		section {
-            paragraph "Set how many sensors are required to change the status of the virtual device."
-            
-            input "activeThreshold", "number", title: "How many sensors must be open before the group is open? Leave set to one if any contact sensor open should make the group open.", required:false, defaultValue: 1
-            
+
+		section(getFormat("header","<b>Options</b>")) {            
+            input "activeThreshold", "number", title: "<b>How many sensors must be open before the group is open?</b><br>Leave set to one if any contact sensor open should make the group open.", required:false, defaultValue: 1,width:6
+			paragraph ""
+			input "delayActive", "number", title: "<b>Add a delay before activating the group device?</b><br>Optional, in seconds", required:false,width:6
+			input "delayInactive", "number", title: "<b>Add a delay before deactivating the group device?</b><br>Optional, in seconds", required:false,width:6
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
 	}
@@ -72,9 +69,9 @@ def uninstalled() {
 }
 
 def updated() {	
-    	logDebug "Updated with settings: ${settings}"
+    logDebug "Updated with settings: ${settings}"
 	unschedule()
-    	unsubscribe()
+    unsubscribe()
 	initialize()
 }
 
@@ -89,18 +86,27 @@ def initialize() {
 }
 
 def contactHandler(evt) {
-    log.info "Contact changed, checking status count..."
+    logDebug "Contact changed, checking status count..."
     getCurrentCount()
-    def device = getChildDevice(state.contactDevice)
+	def newDelayActive = delayActive ?: 0
+	def newDelayInactive = delayInactive ?: 0
 	if (state.totalOpen >= activeThreshold)
 	{
-		log.info "Open threshold met; setting virtual device as open"
-		logDebug "Current threshold value is ${activeThreshold}"
-		device.sendEvent(name: "contact", value: "open", descriptionText: "The open devices are ${state.openList}")
+		if(newDelayActive >= 1) {
+			logDebug "Open threshold met; delaying ${newDelayActive} seconds"
+			unschedule(devInactive)
+			runIn(newDelayActive,devActive)
+		} else {
+			devActive()
+		}
 	} else {
-		log.info "All closed; setting virtual device as closed"
-		logDebug "Current threshold value is ${activeThreshold}"
-		device.sendEvent(name: "contact", value: "closed")
+		if(newDelayInactive >= 1) {
+			logDebug "Close threshold met; delaying ${newDelayInactive} seconds"
+			unschedule(devActive)
+			runIn(newDelayInactive,devInactive)
+		} else {
+			devInactive()
+		}
 	}
 }
 
@@ -109,21 +115,10 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.contactDevice == null) {
         logDebug "Creating child device"
 		state.contactDevice = "contactgroup:" + app.getId()
-		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "contactgroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
+		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "contactgroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
     }
-	else if (childDevice && childDevice.name != (app.label + "_device"))
-		childDevice.name = app.label + "_device"
-}
-
-def logDebug(msg) {
-    if (settings?.debugOutput) {
-		log.debug msg
-	}
-}
-
-def logsOff(){
-    log.warn "debug logging disabled..."
-    app.updateSetting("debugOutput",[value:"false",type:"bool"])
+	else if (childDevice && childDevice.name != (app.label))
+		childDevice.name = app.label
 }
 
 def getCurrentCount() {
@@ -135,13 +130,8 @@ def getCurrentCount() {
 		if (it.currentValue("contact") == "open")
 		{
 			totalOpen++
-			if (it.label) {
-            openList.add(it.label)
+            openList.add(it.displayName)
             }
-            else if (!it.label) {
-                openList.add(it.name)
-            }
-		}
 		else if (it.currentValue("contact") == "closed")
 		{
 			totalClosed++
@@ -157,4 +147,35 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalClosed", value: totalClosed)
     device.sendEvent(name: "TotalOpen", value: totalOpen)
 	device.sendEvent(name: "OpenList", value: state.openList)
+}
+
+def devActive() {
+    def device = getChildDevice(state.contactDevice)
+	log.info "Open threshold met; setting virtual device as open"
+	logDebug "Current threshold value is ${activeThreshold}"
+	device.sendEvent(name: "contact", value: "open", descriptionText: "The open devices are ${state.openList}")
+	device.sendEvent(name: "switch", value: "on")
+}
+
+def devInactive() {
+	def device = getChildDevice(state.contactDevice)
+	log.info "Closed threshold met; setting virtual device as closed"
+	logDebug "Current threshold value is ${activeThreshold}"
+	device.sendEvent(name: "contact", value: "closed")
+	device.sendEvent(name: "switch", value: "off")
+}
+
+def logDebug(msg) {
+    if (settings?.debugOutput) {
+		log.debug msg
+	}
+}
+
+def logsOff(){
+    log.warn "debug logging disabled..."
+    app.updateSetting("debugOutput",[value:"false",type:"bool"])
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
 }
