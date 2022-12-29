@@ -101,6 +101,7 @@ def contactHandler(evt) {
 			unschedule(devInactive)
 			runIn(newDelayActive,devActive)
 		} else {
+			unschedule(devInactive)
 			devActive()
 		}
 	} else {
@@ -109,6 +110,7 @@ def contactHandler(evt) {
 			unschedule(devActive)
 			runIn(newDelayInactive,devInactive)
 		} else {
+			unschedule(devActive)
 			devInactive()
 		}
 	}

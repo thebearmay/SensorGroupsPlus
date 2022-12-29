@@ -44,6 +44,7 @@ def mainPage() {
             "<br>The virtual device will report status based on the configured threshold."
 
 			input "motionSensors", "capability.motionSensor", title: "Motion sensors to monitor", multiple:true, required:true,width:6
+            input "accelSensors", "capability.accelerationSensor", title: "Acceleration sensors to monitor (Optional)",multiple:true, required:false,width:6
         }
 
         section(getFormat("header","<b>Options</b>")) {
@@ -78,11 +79,14 @@ def updated() {
 
 def initialize() {
 	subscribe(motionSensors, "motion", motionHandler)
+    subscribe(accelSensors, "acceleration", motionHandler)
     createOrUpdateChildDevice()
     def device = getChildDevice(state.motionDevice)
     getCurrentCount()
     if (state.totalActive >= activeThreshold) {devActive()} else {devInactive()}
-	device.sendEvent(name: "TotalCount", value: motionSensors.size())
+    def toteCount = motionSensors.size()
+    def totalCount = toteCount + accelSensors.size()
+	device.sendEvent(name: "TotalCount", value: totalCount)
     device.sendEvent(name: "ActiveThreshold", value: activeThreshold) 
 	if (debugOutput) {
 		runIn(1800,logsOff)
@@ -90,7 +94,7 @@ def initialize() {
 }
 
 def motionHandler(evt) {
-    log.info "Motion sensor change; checking totals..."
+    logDebug "Motion sensor change; checking totals..."
     def device = getChildDevice(state.motionDevice)
     getCurrentCount()
     def newDelayActive = delayActive ?: 0
@@ -102,6 +106,7 @@ def motionHandler(evt) {
 			unschedule(devInactive)
 			runIn(newDelayActive,devActive)
 		} else {
+            unschedule(devInactive)
 			devActive()
 		}
 	} else {
@@ -110,6 +115,7 @@ def motionHandler(evt) {
 			unschedule(devActive)
 			runIn(newDelayInactive,devInactive)
 		} else {
+            unschedule(devActive)
 			devInactive()
 		}
 	}
@@ -141,6 +147,17 @@ def getCurrentCount() {
 			totalInactive++
 		}
     }
+    if(accelSensors) {accelSensors.each { it ->
+        if (it.currentValue("acceleration") == "active") 
+        {
+            totalActive++
+            activeList.add(it.displayName)
+        } 
+        else if (it.currentValue("acceleration") == "inactive") 
+        {
+			totalInactive++
+		}
+    }}
     state.totalActive = totalActive
     if (activeList.size() == 0) {
         activeList.add("None")
