@@ -44,7 +44,7 @@ def mainPage() {
 			input "switchSensors", "capability.switch" , title: "Switch sensors to monitor", multiple:true, required:true,width:6
         }
 		section(getFormat("header","<b>Options</b>")) {
-            input "activeThreshold", "number", title: "<b>How many sensors must be on before the group is on?</b><br>Leave set to one if any switch on should make the group on.", required:false, defaultValue: 1
+            input "activeThreshold", "number", title: "<b>How many sensors must be on before the group is on?</b><br>Leave set to one if any switch on should make the group on.", required:false, defaultValue: 1,width:6
             paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
