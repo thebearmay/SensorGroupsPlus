@@ -127,7 +127,9 @@ def getCurrentCount() {
 	if (onList.size() == 0) {
         onList.add("None")
     }
-	state.onList = onList.sort()
+	onList = onList.sort()
+	onList = groovy.json.JsonOutput.toJson(onList)
+	state.onList = onList
     logDebug "There are ${totalOff} sensors off"
     logDebug "There are ${totalOn} sensors on"
     device.sendEvent(name: "TotalOff", value: totalOff)

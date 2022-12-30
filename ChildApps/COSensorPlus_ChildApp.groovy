@@ -142,7 +142,9 @@ def getCurrentCount() {
     if (coDetectedList.size() == 0) {
         coDetectedList.add("None")
     }
-    state.coDetectedList = coDetectedList.sort()
+    coDetectedList = coDetectedList.sort()
+    coDetectedList = groovy.json.JsonOutput.toJson(coDetectedList)
+    state.coDetectedList = coDetectedList
     logDebug "There are ${totalDetected} sensors detecting carbon monoxide"
     logDebug "There are ${totalClear} sensors that are clear"
     device.sendEvent(name: "TotalDetected", value: totalDetected)

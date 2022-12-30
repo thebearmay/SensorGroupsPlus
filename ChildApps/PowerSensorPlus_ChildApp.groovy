@@ -98,8 +98,8 @@ def powerHandler(evt) {
         logDebug "${newName} current power is ${newPower}"
         powerDevices.add(newName+":"+newPower)
     }
-    powerDevices.sort()
-    groovy.json.JsonOutput.toJson(powerDevices)
+    powerDevices = powerDevices.sort()
+    powerDevices = groovy.json.JsonOutput.toJson(powerDevices)
     log.info "Total power is ${totalPower}"
     device.sendEvent(name: "PowerDevices", value: powerDevices, unit: "W")
     device.sendEvent(name: "TotalPower", value: totalPower, unit: "W")

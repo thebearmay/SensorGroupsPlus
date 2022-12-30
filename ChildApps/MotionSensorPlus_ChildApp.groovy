@@ -162,7 +162,9 @@ def getCurrentCount() {
     if (activeList.size() == 0) {
         activeList.add("None")
     }
-    state.activeList = activeList.sort()
+    activeList = activeList.sort()
+    activeList = groovy.json.JsonOutput.toJson(activeList)
+    state.activeList = activeList
     logDebug "There are ${totalActive} sensors active."
     logDebug "There are ${totalInactive} sensors inactive."
     device.sendEvent(name: "TotalActive", value: totalActive)

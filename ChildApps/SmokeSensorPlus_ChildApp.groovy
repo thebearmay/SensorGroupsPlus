@@ -142,7 +142,9 @@ def getCurrentCount() {
     if (smokeDetectedList.size() == 0) {
         smokeDetectedList.add("None")
     }
-    state.smokeDetectedList = smokeDetectedList.sort()
+    smokeDetectedList = smokeDetectedList.sort()
+    smokeDetectedList = groovy.json.JsonOutput.toJson(smokeDetectedList)
+    state.smokeDetectedList = smokeDetectedList
     logDebug "There are ${totalDetected} sensors detecting smoke"
     logDebug "There are ${totalClear} sensors that are clear"
     device.sendEvent(name: "TotalDetected", value: totalDetected)

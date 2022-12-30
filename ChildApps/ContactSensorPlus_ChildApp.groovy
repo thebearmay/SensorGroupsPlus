@@ -145,7 +145,9 @@ def getCurrentCount() {
 	if (openList.size() == 0) {
         openList.add("None")
     }
-	state.openList = openList.sort()
+	openList = openList.sort()
+	openList = groovy.json.JsonOutput.toJson(openList)
+	state.openList = openList
     logDebug "There are ${totalClosed} sensors closed"
     logDebug "There are ${totalOpen} sensors open"
     device.sendEvent(name: "TotalClosed", value: totalClosed)

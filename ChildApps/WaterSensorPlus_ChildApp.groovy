@@ -143,7 +143,9 @@ def getCurrentCount() {
     if (wetList.size() == 0) {
         wetList.add("None")
     }
-    state.wetList = wetList.sort()
+    wetList = wetList.sort()
+    groovy.json.JsonOutput.toJson(wetList)
+    state.wetList = wetList
     logDebug "There are ${totalDry} sensors dry"
     logDebug "There are ${totalWet} sensors wet"
     device.sendEvent(name: "TotalDry", value: totalDry)
