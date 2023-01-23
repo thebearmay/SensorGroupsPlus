@@ -44,6 +44,7 @@ metadata {
 		attribute "TotalClosed", "number"
 		attribute "OpenList", "string"
 		attribute "OpenThreshold", "number"
+        attribute "OpenListTable", "string"
         //CO attributes
         attribute "carbonMonoxide", "enum", ["clear", "detected"]
         attribute "TotalDetected", "number"

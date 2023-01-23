@@ -99,7 +99,7 @@ def contactHandler(evt) {
 		if(newDelayActive >= 1) {
 			logDebug "Open threshold met; delaying ${newDelayActive} seconds"
 			unschedule(devInactive)
-			runIn(newDelayActive,devActive)
+			runIn(newDelayActive,devActive,[overwrite:false])
 		} else {
 			unschedule(devInactive)
 			devActive()
@@ -146,13 +146,17 @@ def getCurrentCount() {
         openList.add("None")
     }
 	openList = openList.sort()
-	openList = groovy.json.JsonOutput.toJson(openList)
-	state.openList = openList
     logDebug "There are ${totalClosed} sensors closed"
     logDebug "There are ${totalOpen} sensors open"
     device.sendEvent(name: "TotalClosed", value: totalClosed)
     device.sendEvent(name: "TotalOpen", value: totalOpen)
-	device.sendEvent(name: "OpenList", value: state.openList)
+	device.sendEvent(name: "OpenList", value: openList)
+	String openListTable = "<style>td{text-align:center}</style><table id='openTable'><th>Open List</th>"
+	openList.each {it ->
+	openListTable += "<tr><td>${it}</td></tr>"
+	}
+	openListTable += "</table>"
+	device.sendEvent(name: "OpenListTable", value: openListTable)
 }
 
 def devActive() {
