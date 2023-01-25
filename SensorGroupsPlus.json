@@ -11,7 +11,7 @@
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",
       "name": "Sensor Groups+",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/SensorGroupsPlus_Parent.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/SensorGroupsPlus_Parent.groovy",
       "required": true,
       "oauth": false,
       "primary": true
@@ -20,7 +20,7 @@
       "id": "56f16146-bd96-4ba5-8b46-1b6d4ec75fdc",
       "name": "Sensor Groups+_CO",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/COSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/COSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -29,7 +29,7 @@
       "id": "f955a181-79e5-4cf7-a0c9-1999a00039bb",
       "name": "Sensor Groups+_Contact",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/ContactSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/ContactSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -38,7 +38,7 @@
       "id": "9ebdf1ea-d549-43b6-b4d3-294f06820ccd",
       "name": "Sensor Groups+_Humidity",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/HumiditySensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/HumiditySensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -47,7 +47,7 @@
       "id": "661dfb8f-8430-4712-b5af-01773d621bfe",
       "name": "Sensor Groups+_Lux",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/LuxSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/LuxSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -56,7 +56,7 @@
       "id": "c6fe11b4-8880-48b7-b1fc-017757a65bcb",
       "name": "Sensor Groups+_Motion",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/MotionSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/MotionSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -65,7 +65,7 @@
       "id": "2a078708-e4cb-4813-8c63-7c7f578392af",
       "name": "Sensor Groups+_Power",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/PowerSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/PowerSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -74,7 +74,7 @@
       "id": "463dd252-6915-4a66-9ffc-47f69ac72f8f",
       "name": "Sensor Groups+_Smoke",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/SmokeSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/SmokeSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -83,7 +83,7 @@
       "id": "60f1aeca-d6ad-4ed2-a08b-08f47be79a9f",
       "name": "Sensor Groups+_Switch",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/SwitchSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/SwitchSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -92,7 +92,7 @@
       "id": "1274a66d-51d4-4341-9925-fa925ffb7bfc",
       "name": "Sensor Groups+_Water",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/WaterSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/WaterSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -101,7 +101,7 @@
       "id": "4102346d-d094-4cfc-902d-de4c394aa038",
       "name": "Sensor Groups+_Temp",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/ChildApps/TempSensorPlus_ChildApp.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/TempSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
@@ -112,7 +112,7 @@
       "id": "4a49dcd9-f6b6-45a0-b5db-5d4d99eb7b64",
       "name": "Sensor Groups+_OmniSensor",
       "namespace": "rle.sg+",
-      "location": "https://raw.githubusercontent.com/FriedCheese2006/SensorGroupsPlus/main/DeviceDrivers/OmniSensorPlus_Driver.groovy",
+      "location": "https://friedcheese2006.gateway.scarf.sh/DeviceDrivers/OmniSensorPlus_Driver.groovy",
       "required": true
     }
   ]
