@@ -104,7 +104,7 @@ def motionHandler(evt) {
 		if(newDelayActive >= 1) {
 			logDebug "Active threshold met; delaying ${newDelayActive} seconds"
 			unschedule(devInactive)
-			runIn(newDelayActive,devActive)
+			runIn(newDelayActive,devActive,[overwrite:false])
 		} else {
             unschedule(devInactive)
 			devActive()
