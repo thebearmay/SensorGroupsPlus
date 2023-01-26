@@ -1,11 +1,11 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "1.9.5",
+  "version": "2.0.0",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
-  "releaseNotes": "1.9.5 - Fixed an issue with the activation/deactivation delays.",
+  "releaseNotes": "2.0.0 - Added displayTable attribute for listing \"active\" items in dashboard tiles.\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
   "apps": [
     {
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",

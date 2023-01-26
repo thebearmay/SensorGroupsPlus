@@ -12,10 +12,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * v1.0		RLE		Creation
- * v1.1     RLE     Added list attribute to show triggered devices
- * v1.2     RLE     Added threshold input and associated logic
- * v1.3		RLE		UI update; added delay options
+ * v1.0		RLE		See parent for changelog
  */
  
 definition(
@@ -34,28 +31,30 @@ preferences {
 
 def mainPage() {
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","<b>App Name</b>")) {
-            label title: "<b>Enter a name for this child app.</b>"+
-            "<br>This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select.", required:true,width:6
+		section(getFormat("header","App Name")) {
+            label title: getFormat("importantBold","Enter a name for this child app.")+
+            getFormat("lessImportant","<br>This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select."), required:true,width:4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
-			paragraph "<b>Please choose which sensors to include in this group.</b>"+
-            "<br>The virtual device will report status based on the configured threshold."
+			paragraph getFormat("importantBold","Please choose which sensors to include in this group.")
 
-			input "motionSensors", "capability.motionSensor", title: "Motion sensors to monitor", multiple:true, required:true,width:6
-            input "accelSensors", "capability.accelerationSensor", title: "Acceleration sensors to monitor (Optional)",multiple:true, required:false,width:6
+			input "motionSensors", "capability.motionSensor", title: getFormat("lessImportant","Motion devices to monitor"), multiple:true, required:true,width:4
+            input "accelSensors", "capability.accelerationSensor", title: getFormat("lessImportant","Acceleration devices to monitor (Optional)"), multiple:true, required:false,width:4
         }
 
-        section(getFormat("header","<b>Options</b>")) {
-            input "activeThreshold", "number", title: "<b>Threshold: How many sensors must be active before the group is active?</b><br>Leave set to one if any motion sensor active should make the group active.", required:false, defaultValue: 1,width:6
+		section(getFormat("header","<b>Options</b>")) {            
+            input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be active before the group is active?")+
+				getFormat("lessImportant","<br>Leave set to one if any motion sensor active should make the group active."), required:false, defaultValue: 1,width:4
 			paragraph ""
-			input "delayActive", "number", title: "<b>Add a delay before activating the group device?</b><br>Optional, in seconds", required:false,width:6
-			input "delayInactive", "number", title: "<b>Add a delay before deactivating the group device?</b><br>Optional, in seconds", required:false,width:6
+			input "delayActive", "number", title: getFormat("importantBold","Add a delay before activating the group device?")+
+				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
+			input "delayInactive", "number", title: getFormat("importantBold","<b>Add a delay before deactivating the group device?</b>")+
+				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
 			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
-    }
+	}
 }
 
 def installed() {
@@ -84,8 +83,8 @@ def initialize() {
     def device = getChildDevice(state.motionDevice)
     getCurrentCount()
     if (state.totalActive >= activeThreshold) {devActive()} else {devInactive()}
-    def toteCount = motionSensors.size()
-    def totalCount = toteCount + accelSensors.size()
+    def totalCount = motionSensors.size()
+    if(accelSensors) {totalCount = totalCount + accelSensors.size()}
 	device.sendEvent(name: "TotalCount", value: totalCount)
     device.sendEvent(name: "ActiveThreshold", value: activeThreshold) 
 	if (debugOutput) {
@@ -163,13 +162,20 @@ def getCurrentCount() {
         activeList.add("None")
     }
     activeList = activeList.sort()
-    activeList = groovy.json.JsonOutput.toJson(activeList)
     state.activeList = activeList
     logDebug "There are ${totalActive} sensors active."
     logDebug "There are ${totalInactive} sensors inactive."
     device.sendEvent(name: "TotalActive", value: totalActive)
     device.sendEvent(name: "TotalInactive", value: totalInactive)
     device.sendEvent(name: "ActiveList", value: state.activeList)
+
+    //Create display list
+    String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"
+	activeList.each {it ->
+	displayList += "<li>${it}</li>"
+	}
+	displayList += "</ul>"
+	device.sendEvent(name: "displayList", value: displayList)
 }
 
 def devActive() {
@@ -199,4 +205,11 @@ def logsOff(){
 
 def getFormat(type, myText="") {
 	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
+	if(type == "red") return "<div style='color:#660000'>${myText}</div>"
+	if(type == "importantBold") return "<div style='color:#32a4be;font-weight: bold'>${myText}</div>"
+	if(type == "important") return "<div style='color:#32a4be'>${myText}</div>"
+	if(type == "important2") return "<div style='color:#5a8200'>${myText}</div>"
+	if(type == "important2Bold") return "<div style='color:#5a8200;font-weight: bold'>${myText}</div>"
+	if(type == "lessImportant") return "<div style='color:green'>${myText}</div>"
+	if(type == "rateDisplay") return "<div style='color:green; text-align: center;font-weight: bold'>${myText}</div>"
 }

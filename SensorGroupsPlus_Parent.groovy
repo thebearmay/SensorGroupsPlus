@@ -12,10 +12,8 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * v1.0		RLE		Creation
- * v1.1		RLE		Added water, smoke, and CO detectors
- * v1.2		RLE		Added temp and humidity
- * v1.3		RLE		Made child app pages dynamic and optional
+ * v2.0		RLE		Starting fresh with the change log.
+ * v2.0.1	RLE		Now with more colors!
  */
  
 definition(
@@ -59,20 +57,20 @@ def mainPage() {
 			"Sensor Groups+_Power"]
 		logDebug "Installed apps are ${state.allAppNames}"
 		if(state.appInstalled == 'COMPLETE'){
-			section("${app.label}") {
-				paragraph "Provides options for combining multiple sensors into a single device to provide combined updates."
+			section(getFormat("header","${app.label}")) {
+				paragraph getFormat("important","Provides options for combining multiple sensors into a single device to provide combined updates.")
 			}
-			section("Child Apps") {
+			section(getFormat("important2Bold","Child Apps")) {
                 childApps.sort().each { kid ->
                     if (kid in state.allAppNames) {
-                        app(name: kid+"App+", appName: kid, namespace: "rle.sg+", title: "Add a new ${kid} Instance", multiple: true)
+                        app(name: kid+"App+", appName: kid, namespace: "rle.sg+", title: getFormat("lessImportant","Add a new ${kid} Instance"), multiple: true)
                     } else {
                     logDebug "${kid} not installed."
 				    }
                 }
 			}
-			section("General") {
-       			label title: "Enter a name for this parent app (optional)", required: false
+			section(getFormat("header","Options")) {
+       			label title: getFormat("important","Enter a name for this parent app (optional)"), required: false
 				input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
  			}
 		}
@@ -124,4 +122,15 @@ def logDebug(msg) {
 def logsOff(){
     log.warn "debug logging disabled..."
     app.updateSetting("debugOutput",[value:"false",type:"bool"])
+}
+
+def getFormat(type, myText="") {
+	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
+	if(type == "red") return "<div style='color:#660000'>${myText}</div>"
+	if(type == "importantBold") return "<div style='color:#32a4be;font-weight: bold'>${myText}</div>"
+	if(type == "important") return "<div style='color:#32a4be'>${myText}</div>"
+	if(type == "important2") return "<div style='color:#5a8200'>${myText}</div>"
+	if(type == "important2Bold") return "<div style='color:#5a8200;font-weight: bold'>${myText}</div>"
+	if(type == "lessImportant") return "<div style='color:green'>${myText}</div>"
+	if(type == "rateDisplay") return "<div style='color:green; text-align: center;font-weight: bold'>${myText}</div>"
 }

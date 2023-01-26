@@ -12,9 +12,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * v1.0		RLE		Creation
- * v1.1     RLE     Cleaned up logging; added device listing to child device
- * v1.2		RLE		UI update
+ * v1.0		RLE		See parent for changelog
  */
  
 definition(
@@ -33,20 +31,21 @@ preferences {
 
 def mainPage() {
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","<b>App Name</b>")) {
-            label title: "<b>Enter a name for this child app.</b>"+
-            "<br>This will create a virtual power sensor which reports the total power based on the sensors you select.", required:true,width:6
+		section(getFormat("header","App Name")) {
+            label title: getFormat("importantBold","Enter a name for this child app.")+
+            getFormat("lessImportant","<br>This will create a virtual power sensor which reports the total power based on the sensors you select."), required:true,width:4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
-			paragraph "<b>Please choose which sensors to include in this group.</b>"
-			input "powerSensors", "capability.powerMeter", title: "Power sensors to monitor", multiple:true, required:true,width:6
+			paragraph getFormat("importantBold","Please choose which sensors to include in this group.")
+
+			input "powerSensors", "capability.powerMeter", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
-        
-        section(getFormat("header","<b>Options</b>")) { 
+
+		section(getFormat("header","<b>Options</b>")) {            
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
-    }
+	}
 }
 
 def installed() {
@@ -96,13 +95,20 @@ def powerHandler(evt) {
             logDebug "${newName} does not have a value for power"
         }
         logDebug "${newName} current power is ${newPower}"
-        powerDevices.add(newName+":"+newPower)
+        powerDevices.add(newName+": "+newPower+"W")
     }
     powerDevices = powerDevices.sort()
-    powerDevices = groovy.json.JsonOutput.toJson(powerDevices)
     log.info "Total power is ${totalPower}"
     device.sendEvent(name: "PowerDevices", value: powerDevices, unit: "W")
     device.sendEvent(name: "TotalPower", value: totalPower, unit: "W")
+
+    //Create display list
+    String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"
+	powerDevices.each {it ->
+	displayList += "<li>${it}</li>"
+	}
+	displayList += "</ul>"
+	device.sendEvent(name: "displayList", value: displayList)
 }
 
 
@@ -129,4 +135,11 @@ def logsOff(){
 
 def getFormat(type, myText="") {
 	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
+	if(type == "red") return "<div style='color:#660000'>${myText}</div>"
+	if(type == "importantBold") return "<div style='color:#32a4be;font-weight: bold'>${myText}</div>"
+	if(type == "important") return "<div style='color:#32a4be'>${myText}</div>"
+	if(type == "important2") return "<div style='color:#5a8200'>${myText}</div>"
+	if(type == "important2Bold") return "<div style='color:#5a8200;font-weight: bold'>${myText}</div>"
+	if(type == "lessImportant") return "<div style='color:green'>${myText}</div>"
+	if(type == "rateDisplay") return "<div style='color:green; text-align: center;font-weight: bold'>${myText}</div>"
 }

@@ -37,6 +37,8 @@ metadata {
         capability "IlluminanceMeasurement"
         capability "Switch"
             
+
+        attribute "displayList", "string"
         //Contact attributes	
 		attribute "contact", "enum", ["closed", "open"]
 		attribute "TotalCount", "number"
@@ -44,7 +46,6 @@ metadata {
 		attribute "TotalClosed", "number"
 		attribute "OpenList", "string"
 		attribute "OpenThreshold", "number"
-        attribute "OpenListTable", "string"
         //CO attributes
         attribute "carbonMonoxide", "enum", ["clear", "detected"]
         attribute "TotalDetected", "number"
@@ -87,7 +88,7 @@ metadata {
         attribute "switch", "enum", ["on", "off"]
         //Power attributes
         attribute "TotalPower", "number"
-        attribute "PowerDevices", "json"
+        attribute "PowerDevices", "string"
 	}
 }
 

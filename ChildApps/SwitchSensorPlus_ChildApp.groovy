@@ -12,8 +12,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * v1.0		RLE		Creation
- * v1.1		RLE		UI update
+ * v1.0		RLE		See parent for changelog
  */
  
 definition(
@@ -32,24 +31,26 @@ preferences {
 
 def mainPage() {
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","<b>App Name</b>")) {
-            label title: "<b>Enter a name for this child app.</b>"+
-            "<br>This will create a virtual switch sensor which reports the on/off status based on the switches you select.", required:true,width:6
+		section(getFormat("header","App Name")) {
+            label title: getFormat("importantBold","Enter a name for this child app.")+
+            getFormat("lessImportant","<br>This will create a virtual switch sensor which reports the on/off status based on the switches you select."), required:true,width:4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
-			paragraph "<b>Please choose which sensors to include in this group.</b>"+
-            "<br>The virtual device will report status based on the configured threshold."
+			paragraph getFormat("importantBold","Please choose which sensors to include in this group.")
 
-			input "switchSensors", "capability.switch" , title: "Switch sensors to monitor", multiple:true, required:true,width:6
+			input "switchSensors", "capability.switch" , title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
-		section(getFormat("header","<b>Options</b>")) {
-            input "activeThreshold", "number", title: "<b>How many sensors must be on before the group is on?</b><br>Leave set to one if any switch on should make the group on.", required:false, defaultValue: 1,width:6
-            paragraph ""
+
+		section(getFormat("header","<b>Options</b>")) {            
+            input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be on before the group is on?")+
+				getFormat("lessImportant","<br>Leave set to one if any switch on should make the group on."), required:false, defaultValue: 1,width:4
+			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
 	}
 }
+
 
 def installed() {
 	initialize()
@@ -128,13 +129,20 @@ def getCurrentCount() {
         onList.add("None")
     }
 	onList = onList.sort()
-	onList = groovy.json.JsonOutput.toJson(onList)
 	state.onList = onList
     logDebug "There are ${totalOff} sensors off"
     logDebug "There are ${totalOn} sensors on"
     device.sendEvent(name: "TotalOff", value: totalOff)
     device.sendEvent(name: "TotalOn", value: totalOn)
-	device.sendEvent(name: "OnList", value: state.onList)
+	device.sendEvent(name: "OnList", value: onList)
+
+	//Create display list
+    String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"
+	onList.each {it ->
+	displayList += "<li>${it}</li>"
+	}
+	displayList += "</ul>"
+	device.sendEvent(name: "displayList", value: displayList)
 }
 
 def logDebug(msg) {
@@ -150,4 +158,11 @@ def logsOff(){
 
 def getFormat(type, myText="") {
 	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
+	if(type == "red") return "<div style='color:#660000'>${myText}</div>"
+	if(type == "importantBold") return "<div style='color:#32a4be;font-weight: bold'>${myText}</div>"
+	if(type == "important") return "<div style='color:#32a4be'>${myText}</div>"
+	if(type == "important2") return "<div style='color:#5a8200'>${myText}</div>"
+	if(type == "important2Bold") return "<div style='color:#5a8200;font-weight: bold'>${myText}</div>"
+	if(type == "lessImportant") return "<div style='color:green'>${myText}</div>"
+	if(type == "rateDisplay") return "<div style='color:green; text-align: center;font-weight: bold'>${myText}</div>"
 }

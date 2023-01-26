@@ -12,10 +12,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * v1.0		RLE		Creation
- * v1.1     RLE     Added list attribute to show triggered devices
- * v1.2     RLE     Added threshold input and associated logic
- * v1.3		RLE		UI update
+ * v1.0		RLE		See parent for changelog
  */
 
 definition(
@@ -34,23 +31,24 @@ preferences {
 
 def mainPage() {
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","<b>App Name</b>")) {
-            label title: "<b>Enter a name for this child app.</b>"+
-            "<br>This will create a virtual smoke sensor which reports the detected/clear status based on the sensors you select.", required:true,width:6
+		section(getFormat("header","App Name")) {
+            label title: getFormat("importantBold","Enter a name for this child app.")+
+            getFormat("lessImportant","<br>This will create a virtual smoke sensor which reports the detected/clear status based on the sensors you select."), required:true,width:4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
-			paragraph "<b>Please choose which sensors to include in this group.</b>"+
-            "<br>The virtual device will report status based on the configured threshold."
+			paragraph getFormat("importantBold","Please choose which sensors to include in this group.")
 
-            input "smokeSensors", "capability.smokeDetector", title: "Smoke sensors to monitor", multiple:true, required:true
+			input "smokeSensors", "capability.smokeDetector", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
-        section(getFormat("header","<b>Options</b>")) {
-            input "activeThreshold", "number", title: "<b>Threshold: How many sensors must detect smoke before the group is detected?</b><br>Leave set to one if smoke detected by any sensor should change the group to detected.", required:false, defaultValue: 1,width:6
-            paragraph ""
+
+		section(getFormat("header","<b>Options</b>")) {            
+            input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must detect smoke before the group is detected?")+
+				getFormat("lessImportant","<br>Leave set to one if smoke detected by any sensor should change the group to detected."), required:false, defaultValue: 1,width:4
+			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
-    }
+	}
 }
 
 def installed() {
@@ -143,15 +141,29 @@ def getCurrentCount() {
         smokeDetectedList.add("None")
     }
     smokeDetectedList = smokeDetectedList.sort()
-    smokeDetectedList = groovy.json.JsonOutput.toJson(smokeDetectedList)
     state.smokeDetectedList = smokeDetectedList
     logDebug "There are ${totalDetected} sensors detecting smoke"
     logDebug "There are ${totalClear} sensors that are clear"
     device.sendEvent(name: "TotalDetected", value: totalDetected)
     device.sendEvent(name: "TotalClear", value: totalClear)
     device.sendEvent(name: "SmokeDetectedList", value: state.smokeDetectedList)
+
+    //Create display list
+    String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"
+	smokeDetectedList.each {it ->
+	displayList += "<li>${it}</li>"
+	}
+	displayList += "</ul>"
+	device.sendEvent(name: "displayList", value: displayList)
 }
 
 def getFormat(type, myText="") {
 	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
+	if(type == "red") return "<div style='color:#660000'>${myText}</div>"
+	if(type == "importantBold") return "<div style='color:#32a4be;font-weight: bold'>${myText}</div>"
+	if(type == "important") return "<div style='color:#32a4be'>${myText}</div>"
+	if(type == "important2") return "<div style='color:#5a8200'>${myText}</div>"
+	if(type == "important2Bold") return "<div style='color:#5a8200;font-weight: bold'>${myText}</div>"
+	if(type == "lessImportant") return "<div style='color:green'>${myText}</div>"
+	if(type == "rateDisplay") return "<div style='color:green; text-align: center;font-weight: bold'>${myText}</div>"
 }

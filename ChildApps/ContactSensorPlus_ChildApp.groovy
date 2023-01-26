@@ -12,10 +12,7 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * v1.0		RLE		Creation
- * v1.1     RLE     Added list attribute to show triggered devices
- * v1.2     RLE     Added threshold input and associated logic
- * v1.3		RLE		Added switch attribute to follow contact attribute; updated UI; added delays for active/inactive
+ * v1.0		RLE		See parent for changelog
  */
  
 definition(
@@ -34,23 +31,25 @@ preferences {
 
 def mainPage() {
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","<b>App Name</b>")) {
-            label title: "<b>Enter a name for this child app.</b>"+
-            "<br>This will create a virtual contact sensor which reports the open/closed status based on the sensors you select.", required:true,width:6
+		section(getFormat("header","App Name")) {
+            label title: getFormat("importantBold","Enter a name for this child app.")+
+            getFormat("lessImportant","<br>This will create also virtual contact sensor which reports the open/closed status based on the sensors you select."), required:true,width:4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
-			paragraph "<b>Please choose which sensors to include in this group.</b>"+
-            "<br>The virtual device will report status based on the configured threshold."
+			paragraph getFormat("importantBold","Please choose which sensors to include in this group.")
 
-			input "contactSensors", "capability.contactSensor", title: "Contact sensors to monitor", multiple:true, required:true,width:6
+			input "contactSensors", "capability.contactSensor", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
 
 		section(getFormat("header","<b>Options</b>")) {            
-            input "activeThreshold", "number", title: "<b>How many sensors must be open before the group is open?</b><br>Leave set to one if any contact sensor open should make the group open.", required:false, defaultValue: 1,width:6
+            input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be open before the group is open?")+
+				getFormat("lessImportant","<br>Leave set to one if any contact sensor open should make the group open."), required:false, defaultValue: 1,width:4
 			paragraph ""
-			input "delayActive", "number", title: "<b>Add a delay before activating the group device?</b><br>Optional, in seconds", required:false,width:6
-			input "delayInactive", "number", title: "<b>Add a delay before deactivating the group device?</b><br>Optional, in seconds", required:false,width:6
+			input "delayActive", "number", title: getFormat("importantBold","Add a delay before activating the group device?")+
+				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
+			input "delayInactive", "number", title: getFormat("importantBold","<b>Add a delay before deactivating the group device?</b>")+
+				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
 			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
@@ -151,12 +150,14 @@ def getCurrentCount() {
     device.sendEvent(name: "TotalClosed", value: totalClosed)
     device.sendEvent(name: "TotalOpen", value: totalOpen)
 	device.sendEvent(name: "OpenList", value: openList)
-	String openListTable = "<style>td{text-align:center}</style><table id='openTable'><th>Open List</th>"
+
+    //Create display list
+    String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"
 	openList.each {it ->
-	openListTable += "<tr><td>${it}</td></tr>"
+	displayList += "<li>${it}</li>"
 	}
-	openListTable += "</table>"
-	device.sendEvent(name: "OpenListTable", value: openListTable)
+	displayList += "</ul>"
+	device.sendEvent(name: "displayList", value: displayList)
 }
 
 def devActive() {
@@ -188,4 +189,11 @@ def logsOff(){
 
 def getFormat(type, myText="") {
 	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
+	if(type == "red") return "<div style='color:#660000'>${myText}</div>"
+	if(type == "importantBold") return "<div style='color:#32a4be;font-weight: bold'>${myText}</div>"
+	if(type == "important") return "<div style='color:#32a4be'>${myText}</div>"
+	if(type == "important2") return "<div style='color:#5a8200'>${myText}</div>"
+	if(type == "important2Bold") return "<div style='color:#5a8200;font-weight: bold'>${myText}</div>"
+	if(type == "lessImportant") return "<div style='color:green'>${myText}</div>"
+	if(type == "rateDisplay") return "<div style='color:green; text-align: center;font-weight: bold'>${myText}</div>"
 }
