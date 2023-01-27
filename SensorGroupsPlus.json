@@ -1,11 +1,11 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
-  "releaseNotes": "2.0.1 - Added displayTable attribute for listing \"active\" items in dashboard tiles.\nUI now has more colors!\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
+  "releaseNotes": "2.1.0 - Added grouping for locks\n2.0.1 - Added displayTable attribute for listing \"active\" items in dashboard tiles.\nUI now has more colors!\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
   "apps": [
     {
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",
@@ -102,6 +102,15 @@
       "name": "Sensor Groups+_Temp",
       "namespace": "rle.sg+",
       "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/TempSensorPlus_ChildApp.groovy",
+      "required": false,
+      "oauth": false,
+      "primary": false
+    },
+    {
+      "id": "a34e4818-8d7e-4f27-a294-5f60a57b1e57",
+      "name": "Sensor Groups+_Lock",
+      "namespace": "rle.sg+",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/LockSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false
