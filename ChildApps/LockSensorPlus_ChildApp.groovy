@@ -43,8 +43,8 @@ def mainPage() {
         }
 
 		section(getFormat("header","<b>Options</b>")) {            
-            input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be locked before the group is locked?")+
-				getFormat("lessImportant","<br>Leave set to one if and device being locked should change the group to locked."), required:false, defaultValue: 1,width:4
+            input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be unlocked before the group is unlocked?")+
+				getFormat("lessImportant","<br>Leave set to one if and device being unlocked should change the group to locked."), required:false, defaultValue: 1,width:4
 			paragraph ""
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
         }
@@ -76,7 +76,7 @@ def initialize() {
     lockHandler()
     def device = getChildDevice(state.lockDevice)
     device.sendEvent(name: "TotalCount", value: lockSensors.size())
-    device.sendEvent(name: "LocksLockedThreshold", value: activeThreshold)
+    device.sendEvent(name: "LocksUnlockedThreshold", value: activeThreshold)
 	if (debugOutput) {
 		runIn(1800,logsOff)
 	}
@@ -86,17 +86,17 @@ def lockHandler(evt) {
     log.info "Lock status changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.lockDevice)
-    if (state.totalLocked >= activeThreshold)
+    if (state.totalUnlocked >= activeThreshold)
     {
-        log.info "Locked threshold met; setting group device as locked"
+        log.info "Unlocked threshold met; setting group device as unlocked"
         logDebug "Current threshold value is ${activeThreshold}"
-        device.sendEvent(name: "lock", value: "locked", descriptionText: "The locked devices are ${state.lockedList}")
+        device.sendEvent(name: "lock", value: "unlocked", descriptionText: "The unlocked devices are ${state.lockedList}")
     }
     else
     {
-        log.info "Locked threshold not met; setting virtual device as unlocked"
+        log.info "Unlocked threshold not met; setting virtual device as locked"
         logDebug "Current threshold value is ${activeThreshold}"
-        device.sendEvent(name: "lock", value: "unlocked")
+        device.sendEvent(name: "lock", value: "locked")
     }
 }
 
@@ -124,33 +124,33 @@ def getCurrentCount() {
     def device = getChildDevice(state.lockDevice)
     def totalLocked = 0
     def totalUnlocked = 0
-    def lockedList = []
+    def unlockedList = []
     lockSensors.each { it ->
-        if (it.currentValue("lock") == "locked")
-        {
-            totalLocked++
-            lockedList.add(it.displayName)
-            }
-        else if (it.currentValue("lock") == "unlocked")
+        if (it.currentValue("lock") == "unlocked")
         {
             totalUnlocked++
+            unlockedList.add(it.displayName)
+            }
+        else if (it.currentValue("lock") == "locked")
+        {
+            totalLocked++
         }
     }
     state.totalLocked = totalLocked
-    if (lockedList.size() == 0) {
-        lockedList.add("None")
+    if (unlockedList.size() == 0) {
+        unlockedList.add("None")
     }
-    lockedList = lockedList.sort()
-    state.lockedList = lockedList
+    unlockedList = unlockedList.sort()
+    state.unlockedList = unlockedList
     logDebug "There are ${totalLocked} devices locked."
     logDebug "There are ${totalUnlocked} devices unlocked."
     device.sendEvent(name: "TotalLocked", value: totalLocked)
     device.sendEvent(name: "TotalUnlocked", value: totalUnlocked)
-    device.sendEvent(name: "LockedList", value: state.lockedList)
+    device.sendEvent(name: "UnlockedList", value: state.unlockedList)
 
     //Create display list
     String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"
-	lockedList.each {it ->
+	unlockedList.each {it ->
 	displayList += "<li>${it}</li>"
 	}
 	displayList += "</ul>"

@@ -93,8 +93,8 @@ metadata {
         attribute "lock", "enum", ["unlocked", "locked"]
         attribute "TotalLocked", "number"
         attribute "TotalUnlocked", "number"
-        attribute "LockedList", "string"
-        attribute "LocksLockedThreshold", "number"
+        attribute "UnlockedList", "string"
+        attribute "LocksUnlockedThreshold", "number"
 	}
 }
 
