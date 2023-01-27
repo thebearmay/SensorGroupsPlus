@@ -89,6 +89,12 @@ metadata {
         //Power attributes
         attribute "TotalPower", "number"
         attribute "PowerDevices", "string"
+        //CO attributes
+        attribute "lock", "enum", ["unlocked", "locked"]
+        attribute "TotalLocked", "number"
+        attribute "TotalUnlocked", "number"
+        attribute "LockedList", "string"
+        attribute "LocksLockedThreshold", "number"
 	}
 }
 

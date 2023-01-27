@@ -14,6 +14,7 @@
  *
  * v2.0		RLE		Starting fresh with the change log.
  * v2.0.1	RLE		Now with more colors!
+ * v2.1.0	RLE		New app for grouping locks.
  */
  
 definition(
@@ -54,7 +55,8 @@ def mainPage() {
 			"Sensor Groups+_Temp",
 			"Sensor Groups+_Water",
 			"Sensor Groups+_Lux",
-			"Sensor Groups+_Power"]
+			"Sensor Groups+_Power",
+			"Sensor Groups+_Lock"]
 		logDebug "Installed apps are ${state.allAppNames}"
 		if(state.appInstalled == 'COMPLETE'){
 			section(getFormat("header","${app.label}")) {
