@@ -15,6 +15,7 @@
  * v2.0		RLE		Starting fresh with the change log.
  * v2.0.1	RLE		Now with more colors!
  * v2.1.0	RLE		New app for grouping locks.
+ * v2.1.2	RLE		Hotfix for lock group app.
  */
  
 definition(

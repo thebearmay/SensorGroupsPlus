@@ -136,7 +136,7 @@ def getCurrentCount() {
             totalLocked++
         }
     }
-    state.totalLocked = totalLocked
+    state.totalUnlocked = totalUnlocked
     if (unlockedList.size() == 0) {
         unlockedList.add("None")
     }
