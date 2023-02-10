@@ -145,6 +145,7 @@ def getCurrentCount() {
         openList.add("None")
     }
 	openList = openList.sort()
+	state.openList = openList
     logDebug "There are ${totalClosed} sensors closed"
     logDebug "There are ${totalOpen} sensors open"
     device.sendEvent(name: "TotalClosed", value: totalClosed)

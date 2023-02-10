@@ -16,6 +16,7 @@
  * v2.0.1	RLE		Now with more colors!
  * v2.1.0	RLE		New app for grouping locks.
  * v2.1.2	RLE		Hotfix for lock group app.
+ * v2.1.3	RLE		Fix for contact group list in event log.
  */
  
 definition(
