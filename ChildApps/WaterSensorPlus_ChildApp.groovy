@@ -46,7 +46,8 @@ def mainPage() {
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be wet before the group is wet?")+
 				getFormat("lessImportant","<br>Leave set to one if any sensor being wet should make the group wet."), required:false, defaultValue: 1,width:4
 			paragraph ""
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -83,18 +84,18 @@ def initialize() {
 }
 
 def waterHandler(evt) {
-    log.info "Water changed, checking status count..."
+    logInfo "Water changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.waterDevice)
     if (state.totalWet >= activeThreshold)
     {
-        log.info "Wet threshold met; setting virtual device as wet"
+        logInfo "Wet threshold met; setting virtual device as wet"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "water", value: "wet", descriptionText: "The wet devices are ${state.wetList}")
     }
     else
     {
-        log.info "Wet threshold not met; setting virtual device as dry"
+        logInfo "Wet threshold not met; setting virtual device as dry"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "water", value: "dry")
     }
@@ -106,6 +107,12 @@ def createOrUpdateChildDevice() {
         logDebug "Creating child device"
         state.waterDevice = "watergroup:" + app.getId()
         addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "watergroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
+    }
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
     }
 }
 

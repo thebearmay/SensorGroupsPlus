@@ -51,7 +51,8 @@ def mainPage() {
 			input "delayInactive", "number", title: getFormat("importantBold","<b>Add a delay before deactivating the group device?</b>")+
 				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
 			paragraph ""
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -163,7 +164,7 @@ def getCurrentCount() {
 
 def devActive() {
     def device = getChildDevice(state.contactDevice)
-	log.info "Open threshold met; setting virtual device as open"
+	logInfo "Open threshold met; setting virtual device as open"
 	logDebug "Current threshold value is ${activeThreshold}"
 	device.sendEvent(name: "contact", value: "open", descriptionText: "The open devices are ${state.openList}")
 	device.sendEvent(name: "switch", value: "on")
@@ -171,10 +172,16 @@ def devActive() {
 
 def devInactive() {
 	def device = getChildDevice(state.contactDevice)
-	log.info "Closed threshold met; setting virtual device as closed"
+	logInfo "Closed threshold met; setting virtual device as closed"
 	logDebug "Current threshold value is ${activeThreshold}"
 	device.sendEvent(name: "contact", value: "closed")
 	device.sendEvent(name: "switch", value: "off")
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
+    }
 }
 
 def logDebug(msg) {

@@ -43,7 +43,8 @@ def mainPage() {
         }
 
 		section(getFormat("header","<b>Options</b>")) {            
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -77,7 +78,7 @@ def initialize() {
 }
 
 def powerHandler(evt) {
-    log.info "Power sensor change; checking totals..."
+    logInfo "Power sensor change; checking totals..."
     def totalCount = powerSensors.size()
     def device = getChildDevice(state.powerDevice)
     device.sendEvent(name: "TotalCount", value: totalCount)
@@ -98,7 +99,7 @@ def powerHandler(evt) {
         powerDevices.add(newName+": "+newPower+"W")
     }
     powerDevices = powerDevices.sort()
-    log.info "Total power is ${totalPower}"
+    logInfo "Total power is ${totalPower}"
     device.sendEvent(name: "PowerDevices", value: powerDevices, unit: "W")
     device.sendEvent(name: "TotalPower", value: totalPower, unit: "W")
 
@@ -120,6 +121,12 @@ def createOrUpdateChildDevice() {
         addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "powergroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
     } else if (childDevice && childDevice.name != app.label)
 		childDevice.name = app.label + "_device"
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
+    }
 }
 
 def logDebug(msg) {

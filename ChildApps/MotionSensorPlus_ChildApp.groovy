@@ -52,7 +52,8 @@ def mainPage() {
 			input "delayInactive", "number", title: getFormat("importantBold","<b>Add a delay before deactivating the group device?</b>")+
 				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
 			paragraph ""
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -180,16 +181,22 @@ def getCurrentCount() {
 
 def devActive() {
     def device = getChildDevice(state.motionDevice)
-    log.info "Active threshold met; setting group device as active"
+    logInfo "Active threshold met; setting group device as active"
     logDebug "Current threshold value is ${activeThreshold}"
     device.sendEvent(name: "motion", value: "active", descriptionText: "The detected devices are ${state.activeList}")
 }
 
 def devInactive() {
 	def device = getChildDevice(state.motionDevice)
-	log.info "Active threshold not met; setting group device as inactive"
+	logInfo "Active threshold not met; setting group device as inactive"
     logDebug "Current threshold value is ${activeThreshold}"
     device.sendEvent(name: "motion", value: "inactive")
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
+    }
 }
 
 def logDebug(msg) {

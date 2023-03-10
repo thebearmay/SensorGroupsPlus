@@ -46,7 +46,8 @@ def mainPage() {
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be unlocked before the group is unlocked?")+
 				getFormat("lessImportant","<br>Leave set to one if and device being unlocked should change the group to locked."), required:false, defaultValue: 1,width:4
 			paragraph ""
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -83,18 +84,18 @@ def initialize() {
 }
 
 def lockHandler(evt) {
-    log.info "Lock status changed, checking status count..."
+    logInfo "Lock status changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.lockDevice)
     if (state.totalUnlocked >= activeThreshold)
     {
-        log.info "Unlocked threshold met; setting group device as unlocked"
+        logInfo "Unlocked threshold met; setting group device as unlocked"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "lock", value: "unlocked", descriptionText: "The unlocked devices are ${state.lockedList}")
     }
     else
     {
-        log.info "Unlocked threshold not met; setting virtual device as locked"
+        logInfo "Unlocked threshold not met; setting virtual device as locked"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "lock", value: "locked")
     }
@@ -111,7 +112,13 @@ def createOrUpdateChildDevice() {
 
 def logDebug(msg) {
     if (settings?.debugOutput) {
-        log.debug msg
+        log.info msg
+    }
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.debug msg
     }
 }
 

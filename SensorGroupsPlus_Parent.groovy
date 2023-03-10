@@ -17,6 +17,7 @@
  * v2.1.0	RLE		New app for grouping locks.
  * v2.1.2	RLE		Hotfix for lock group app.
  * v2.1.3	RLE		Fix for contact group list in event log.
+ * v2.1.4	RLE		Made info logging optional throughout all child apps.
  */
  
 definition(
@@ -115,6 +116,12 @@ def getAppsList() {
         log.error(getExceptionMessageWithLine(e))
 	}
     state.allAppNames = allAppNames.sort()
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
+    }
 }
 
 def logDebug(msg) {

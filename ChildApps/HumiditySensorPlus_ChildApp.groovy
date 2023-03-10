@@ -44,7 +44,8 @@ def mainPage() {
 
 		section(getFormat("header","<b>Options</b>")) {            
             
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -79,7 +80,7 @@ def initialize() {
 }
 
 def humidityHandler(evt) {
-    log.info "Humidity sensor change; checking totals..."
+    logInfo "Humidity sensor change; checking totals..."
     def totalCount = humiditySensors.size()
     def device = getChildDevice(state.humidityDevice)
     device.sendEvent(name: "TotalCount", value: totalCount)    
@@ -108,6 +109,12 @@ def createOrUpdateChildDevice() {
         logDebug "Creating child device"
         state.humidityDevice = "humiditygroup:" + app.getId()
         addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "humiditygroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
+    }
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
     }
 }
 

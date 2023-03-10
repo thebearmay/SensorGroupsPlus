@@ -46,7 +46,8 @@ def mainPage() {
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be on before the group is on?")+
 				getFormat("lessImportant","<br>Leave set to one if any switch on should make the group on."), required:false, defaultValue: 1,width:4
 			paragraph ""
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -84,16 +85,16 @@ def initialize() {
 }
 
 def switchHandler(evt) {
-    log.info "Switch changed, checking status count..."
+    logInfo "Switch changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.switchDevice)
 	if (state.totalOn >= activeThreshold)
 	{
-		log.info "On threshold met; setting virtual device as on"
+		logInfo "On threshold met; setting virtual device as on"
 		logDebug "Current threshold value is ${activeThreshold}"
 		device.sendEvent(name: "switch", value: "on", descriptionText: "The on devices are ${state.onList}")
 	} else {
-		log.info "On threshold not met; setting virtual device as off"
+		logInfo "On threshold not met; setting virtual device as off"
 		logDebug "Current threshold value is ${activeThreshold}"
 		device.sendEvent(name: "switch", value: "off")
 	}
@@ -143,6 +144,12 @@ def getCurrentCount() {
 	}
 	displayList += "</ul>"
 	device.sendEvent(name: "displayList", value: displayList)
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
+    }
 }
 
 def logDebug(msg) {

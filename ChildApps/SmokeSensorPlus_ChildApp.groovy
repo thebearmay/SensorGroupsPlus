@@ -46,7 +46,8 @@ def mainPage() {
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must detect smoke before the group is detected?")+
 				getFormat("lessImportant","<br>Leave set to one if smoke detected by any sensor should change the group to detected."), required:false, defaultValue: 1,width:4
 			paragraph ""
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -83,18 +84,18 @@ def initialize() {
 }
 
 def smokeHandler(evt) {
-    log.info "Smoke status changed, checking status count..."
+    logInfo "Smoke status changed, checking status count..."
     getCurrentCount()
     def device = getChildDevice(state.smokeDevice)
     if (state.totalDetected >= activeThreshold)
     {
-        log.info "Detected threshold met; setting group device as detected"
+        logInfo "Detected threshold met; setting group device as detected"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "smoke", value: "detected", descriptionText: "The detected devices are ${state.smokeDetectedList}")
     }
     else
     {
-        log.info "Detected threshold not met; setting virtual device as clear"
+        logInfo "Detected threshold not met; setting virtual device as clear"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "smoke", value: "clear")
     }
@@ -106,6 +107,12 @@ def createOrUpdateChildDevice() {
         logDebug "Creating child device"
         state.smokeDevice = "smokegroup:" + app.getId()
         addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "smokegroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
+    }
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
     }
 }
 

@@ -43,7 +43,8 @@ def mainPage() {
         }
 
 		section(getFormat("header","<b>Options</b>")) {            
-            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false
+			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
+            input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
 	}
 }
@@ -77,7 +78,7 @@ def initialize() {
 }
 
 def tempHandler(evt) {
-    log.info "Temp sensor change; checking totals..."
+    logInfo "Temp sensor change; checking totals..."
     def totalCount = tempSensors.size()
     def device = getChildDevice(state.tempDevice)
     device.sendEvent(name: "TotalCount", value: totalCount)    
@@ -106,6 +107,12 @@ def createOrUpdateChildDevice() {
         logDebug "Creating child device"
         state.tempDevice = "tempgroup:" + app.getId()
         addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "tempgroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
+    }
+}
+
+def logInfo(msg) {
+    if (settings?.infoOutput) {
+		log.info msg
     }
 }
 
