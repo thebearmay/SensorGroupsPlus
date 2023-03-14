@@ -30,10 +30,15 @@ preferences {
 }
 
 def mainPage() {
+    if(app.getInstallationState() != "COMPLETE") {hide=false} else {hide=true}
+
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","App Name")) {
+		section(getFormat("header","Name"),hideable: true, hidden: hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
             getFormat("lessImportant","<br>This will create a virtual power sensor which reports the total power based on the sensors you select."), required:true,width:4
+            paragraph ""
+			input "enforceName", "bool", title: getFormat("importantBold","Sync child device name?")+
+            getFormat("lessImportant","<br>Enable: the device and app names will sync.<br>Disabled: the device name can be changed."), defaultValue: true, displayDuringSetup: true, required: false, width: 4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
@@ -42,7 +47,7 @@ def mainPage() {
 			input "powerSensors", "capability.powerMeter", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
 
-		section(getFormat("header","<b>Options</b>")) {            
+		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: hide) {            
 			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
         }
@@ -118,9 +123,13 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.powerDevice == null) {
         logDebug "Creating child device"
         state.powerDevice = "powergroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "powergroup:" + app.getId(), 1234, [name: app.label + "_device", isComponent: false])
-    } else if (childDevice && childDevice.name != app.label)
-		childDevice.name = app.label + "_device"
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "powergroup:" + app.getId(), 1234, [label: app.label + "_device", isComponent: false])
+    }
+    if(enforceName) {
+		if(childDevice.displayName != app.label) {
+			childDevice.label = app.label
+		}
+	}
 }
 
 def logInfo(msg) {

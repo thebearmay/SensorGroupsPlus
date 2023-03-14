@@ -30,10 +30,15 @@ preferences {
 }
 
 def mainPage() {
+	if(app.getInstallationState() != "COMPLETE") {hide=false} else {hide=true}
+
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","App Name")) {
+		section(getFormat("header","Name"),hideable: true, hidden: hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
-            getFormat("lessImportant","<br>This will create also virtual contact sensor which reports the open/closed status based on the sensors you select."), required:true,width:4
+            getFormat("lessImportant","<br>This app will also create a virtual contact sensor which reports the open/closed status based on the sensors you select."), required:true,width:4
+			paragraph ""
+			input "enforceName", "bool", title: getFormat("importantBold","Sync child device name?")+
+            getFormat("lessImportant","<br>Enable: the device and app names will sync.<br>Disabled: the device name can be changed."), defaultValue: true, displayDuringSetup: true, required: false, width: 4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
@@ -42,14 +47,14 @@ def mainPage() {
 			input "contactSensors", "capability.contactSensor", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
 
-		section(getFormat("header","<b>Options</b>")) {            
+		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: hide) {            
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be open before the group is open?")+
-				getFormat("lessImportant","<br>Leave set to one if any contact sensor open should make the group open."), required:false, defaultValue: 1,width:4
+			getFormat("lessImportant","<br>Leave set to one if any contact sensor open should make the group open."), required:false, defaultValue: 1,width:4
 			paragraph ""
 			input "delayActive", "number", title: getFormat("importantBold","Add a delay before activating the group device?")+
-				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
+			getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
 			input "delayInactive", "number", title: getFormat("importantBold","<b>Add a delay before deactivating the group device?</b>")+
-				getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
+			getFormat("lessImportant","<br>Optional, in seconds"), required:false,width:4
 			paragraph ""
 			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
@@ -121,8 +126,13 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.contactDevice == null) {
         logDebug "Creating child device"
 		state.contactDevice = "contactgroup:" + app.getId()
-		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "contactgroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
+		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "contactgroup:" + app.getId(), 1234, [label: app.label, isComponent: false])
     }
+	if(enforceName) {
+		if(childDevice.displayName != app.label) {
+			childDevice.label = app.label
+		}
+	}
 }
 
 def getCurrentCount() {

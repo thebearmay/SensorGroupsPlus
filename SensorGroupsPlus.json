@@ -1,11 +1,11 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
-  "releaseNotes": "v2.1.4 - Made info logging optional.\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
+  "releaseNotes": "v2.1.5 - Added option to keep the app/device name in sync. Made sections of the app page hideable and hidden by default after installation.\nv2.1.4 - Made info logging optional.\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
   "apps": [
     {
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",

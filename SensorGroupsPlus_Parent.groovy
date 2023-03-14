@@ -18,6 +18,7 @@
  * v2.1.2	RLE		Hotfix for lock group app.
  * v2.1.3	RLE		Fix for contact group list in event log.
  * v2.1.4	RLE		Made info logging optional throughout all child apps.
+ * v2.1.5	RLE		Added option to keep the app/device name in sync. Made sections of the app page hideable and hidden by default after installation.
  */
  
 definition(

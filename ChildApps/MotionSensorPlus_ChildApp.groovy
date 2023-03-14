@@ -30,10 +30,15 @@ preferences {
 }
 
 def mainPage() {
+    if(app.getInstallationState() != "COMPLETE") {hide=false} else {hide=true}
+
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","App Name")) {
+		section(getFormat("header","Name"),hideable: true, hidden: hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
             getFormat("lessImportant","<br>This will create a virtual motion sensor which reports the active/inactive status based on the sensors you select."), required:true,width:4
+            paragraph ""
+			input "enforceName", "bool", title: getFormat("importantBold","Sync child device name?")+
+            getFormat("lessImportant","<br>Enable: the device and app names will sync.<br>Disabled: the device name can be changed."), defaultValue: true, displayDuringSetup: true, required: false, width: 4
 		}
 
 		section(getFormat("header","<b>Device Selection</b>")) {
@@ -43,7 +48,7 @@ def mainPage() {
             input "accelSensors", "capability.accelerationSensor", title: getFormat("lessImportant","Acceleration devices to monitor (Optional)"), multiple:true, required:false,width:4
         }
 
-		section(getFormat("header","<b>Options</b>")) {            
+		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: hide) {            
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be active before the group is active?")+
 				getFormat("lessImportant","<br>Leave set to one if any motion sensor active should make the group active."), required:false, defaultValue: 1,width:4
 			paragraph ""
@@ -127,8 +132,13 @@ def createOrUpdateChildDevice() {
     if (!childDevice || state.motionDevice == null) {
         logDebug "Creating child device"
         state.motionDevice = "motiongroup:" + app.getId()
-        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "motiongroup:" + app.getId(), 1234, [name: app.label, isComponent: false])
+        addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "motiongroup:" + app.getId(), 1234, [label: app.label, isComponent: false])
     }
+    if(enforceName) {
+		if(childDevice.displayName != app.label) {
+			childDevice.label = app.label
+		}
+	}
 }
 
 def getCurrentCount() {
