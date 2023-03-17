@@ -95,11 +95,11 @@ def switchHandler(evt) {
     def device = getChildDevice(state.switchDevice)
 	if (state.totalOn >= activeThreshold)
 	{
-		logInfo "On threshold met; setting virtual device as on"
+		logInfo "On threshold met; setting ${device.displayName} as on"
 		logDebug "Current threshold value is ${activeThreshold}"
 		device.sendEvent(name: "switch", value: "on", descriptionText: "The on devices are ${state.onList}")
 	} else {
-		logInfo "On threshold not met; setting virtual device as off"
+		logInfo "On threshold not met; setting ${device.displayName} as off"
 		logDebug "Current threshold value is ${activeThreshold}"
 		device.sendEvent(name: "switch", value: "off")
 	}

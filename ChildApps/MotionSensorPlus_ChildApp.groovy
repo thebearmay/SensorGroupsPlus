@@ -191,14 +191,14 @@ def getCurrentCount() {
 
 def devActive() {
     def device = getChildDevice(state.motionDevice)
-    logInfo "Active threshold met; setting group device as active"
+    logInfo "Active threshold met; setting ${device.displayName} as active"
     logDebug "Current threshold value is ${activeThreshold}"
     device.sendEvent(name: "motion", value: "active", descriptionText: "The detected devices are ${state.activeList}")
 }
 
 def devInactive() {
 	def device = getChildDevice(state.motionDevice)
-	logInfo "Active threshold not met; setting group device as inactive"
+	logInfo "Active threshold not met; setting ${device.displayName} as inactive"
     logDebug "Current threshold value is ${activeThreshold}"
     device.sendEvent(name: "motion", value: "inactive")
 }

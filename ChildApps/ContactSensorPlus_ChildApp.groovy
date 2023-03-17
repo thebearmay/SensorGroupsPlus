@@ -174,7 +174,7 @@ def getCurrentCount() {
 
 def devActive() {
     def device = getChildDevice(state.contactDevice)
-	logInfo "Open threshold met; setting virtual device as open"
+	logInfo "Open threshold met; setting ${device.displayName} as open"
 	logDebug "Current threshold value is ${activeThreshold}"
 	device.sendEvent(name: "contact", value: "open", descriptionText: "The open devices are ${state.openList}")
 	device.sendEvent(name: "switch", value: "on")
@@ -182,7 +182,7 @@ def devActive() {
 
 def devInactive() {
 	def device = getChildDevice(state.contactDevice)
-	logInfo "Closed threshold met; setting virtual device as closed"
+	logInfo "Closed threshold met; setting ${device.displayName} as closed"
 	logDebug "Current threshold value is ${activeThreshold}"
 	device.sendEvent(name: "contact", value: "closed")
 	device.sendEvent(name: "switch", value: "off")

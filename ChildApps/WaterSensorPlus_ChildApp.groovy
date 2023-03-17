@@ -94,13 +94,13 @@ def waterHandler(evt) {
     def device = getChildDevice(state.waterDevice)
     if (state.totalWet >= activeThreshold)
     {
-        logInfo "Wet threshold met; setting virtual device as wet"
+        logInfo "Wet threshold met; setting ${device.displayName} as wet"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "water", value: "wet", descriptionText: "The wet devices are ${state.wetList}")
     }
     else
     {
-        logInfo "Wet threshold not met; setting virtual device as dry"
+        logInfo "Wet threshold not met; setting ${device.displayName} as dry"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "water", value: "dry")
     }

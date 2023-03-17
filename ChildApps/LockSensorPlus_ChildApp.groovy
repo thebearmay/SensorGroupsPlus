@@ -94,13 +94,13 @@ def lockHandler(evt) {
     def device = getChildDevice(state.lockDevice)
     if (state.totalUnlocked >= activeThreshold)
     {
-        logInfo "Unlocked threshold met; setting group device as unlocked"
+        logInfo "Unlocked threshold met; setting ${device.displayName} as unlocked"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "lock", value: "unlocked", descriptionText: "The unlocked devices are ${state.lockedList}")
     }
     else
     {
-        logInfo "Unlocked threshold not met; setting virtual device as locked"
+        logInfo "Unlocked threshold not met; setting ${device.displayName} as locked"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "lock", value: "locked")
     }

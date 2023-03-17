@@ -94,13 +94,13 @@ def smokeHandler(evt) {
     def device = getChildDevice(state.smokeDevice)
     if (state.totalDetected >= activeThreshold)
     {
-        logInfo "Detected threshold met; setting group device as detected"
+        logInfo "Detected threshold met; setting ${device.displayName} as detected"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "smoke", value: "detected", descriptionText: "The detected devices are ${state.smokeDetectedList}")
     }
     else
     {
-        logInfo "Detected threshold not met; setting virtual device as clear"
+        logInfo "Detected threshold not met; setting ${device.displayName} as clear"
         logDebug "Current threshold value is ${activeThreshold}"
         device.sendEvent(name: "smoke", value: "clear")
     }
