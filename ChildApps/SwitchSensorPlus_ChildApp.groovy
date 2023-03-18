@@ -30,10 +30,10 @@ preferences {
 }
 
 def mainPage() {
-	if(app.getInstallationState() != "COMPLETE") {hide=false} else {hide=true}
+	if(app.getInstallationState() != "COMPLETE") {state.hide=false} else {state.hide=true}
 
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","Name"),hideable: true, hidden: hide) {
+		section(getFormat("header","Name"),hideable: true, hidden: state.hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
             getFormat("lessImportant","<br>This will create a virtual switch sensor which reports the on/off status based on the switches you select."), required:true,width:4
 			paragraph ""
@@ -47,7 +47,7 @@ def mainPage() {
 			input "switchSensors", "capability.switch" , title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
 
-		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: hide) {            
+		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: state.hide) {            
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be on before the group is on?")+
 				getFormat("lessImportant","<br>Leave set to one if any switch on should make the group on."), required:false, defaultValue: 1,width:4
 			paragraph ""
@@ -107,14 +107,17 @@ def switchHandler(evt) {
 
 def createOrUpdateChildDevice() {
 	def childDevice = getChildDevice("switchgroup:" + app.getId())
-    if (!childDevice || state.switchDevice == null) {
+	state.switchDevice = state.switchDevice ?: "switchgroup:" + app.getId()
+    if (!childDevice) {
         logDebug "Creating child device"
-		state.switchDevice = "switchgroup:" + app.getId()
 		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "switchgroup:" + app.getId(), 1234, [label: app.label, isComponent: false])
     }
-	if(enforceName) {
-		if(childDevice.displayName != app.label) {
-			childDevice.label = app.label
+	if(state.hide) {
+		if(enforceName) {
+			if(childDevice.displayName != app.label) {
+				log.warn "Child device of: ${childDevice.displayName} does not equal app name of: ${app.label}. Resetting device name."
+				childDevice.label = app.label
+			}
 		}
 	}
 }

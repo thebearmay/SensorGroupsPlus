@@ -30,10 +30,10 @@ preferences {
 }
 
 def mainPage() {
-	if(app.getInstallationState() != "COMPLETE") {hide=false} else {hide=true}
+	if(app.getInstallationState() != "COMPLETE") {state.hide=false} else {state.hide=true}
 
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","Name"),hideable: true, hidden: hide) {
+		section(getFormat("header","Name"),hideable: true, hidden: state.hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
             getFormat("lessImportant","<br>This app will also create a virtual contact sensor which reports the open/closed status based on the sensors you select."), required:true,width:4
 			paragraph ""
@@ -47,7 +47,7 @@ def mainPage() {
 			input "contactSensors", "capability.contactSensor", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
 
-		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: hide) {            
+		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: state.hide) {            
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be open before the group is open?")+
 			getFormat("lessImportant","<br>Leave set to one if any contact sensor open should make the group open."), required:false, defaultValue: 1,width:4
 			paragraph ""
@@ -123,14 +123,17 @@ def contactHandler(evt) {
 
 def createOrUpdateChildDevice() {
 	def childDevice = getChildDevice("contactgroup:" + app.getId())
-    if (!childDevice || state.contactDevice == null) {
+	state.contactDevice = state.contactDevice ?: "contactgroup:" + app.getId()
+    if (!childDevice) {
         logDebug "Creating child device"
-		state.contactDevice = "contactgroup:" + app.getId()
 		addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "contactgroup:" + app.getId(), 1234, [label: app.label, isComponent: false])
     }
-	if(enforceName) {
-		if(childDevice.displayName != app.label) {
-			childDevice.label = app.label
+	if(state.hide) {
+		if(enforceName) {
+			if(childDevice.displayName != app.label) {
+				log.warn "Child device of: ${childDevice.displayName} does not equal app name of: ${app.label}. Resetting device name."
+				childDevice.label = app.label
+			}
 		}
 	}
 }

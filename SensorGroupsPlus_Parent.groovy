@@ -20,6 +20,7 @@
  * v2.1.4	RLE		Made info logging optional throughout all child apps.
  * v2.1.5	RLE		Added option to keep the app/device name in sync. Made sections of the app page hideable and hidden by default after installation.
  * v2.1.6	RLE		Changed info logging to provide the child device name instead of the generic "virtual device"
+ * v2.1.7	RLE		Fixed logic for child device naming. Set parent app to auto install.
  */
  
 definition(
@@ -29,7 +30,8 @@ definition(
     description: "Creates a virtual device to track a group of sensors.",
     category: "Convenience",
 	iconUrl: "",
-    iconX2Url: "")
+    iconX2Url: "",
+	installOnOpen: true)
 
 preferences {
      page(name: "mainPage", title: "", install: true, uninstall: true)

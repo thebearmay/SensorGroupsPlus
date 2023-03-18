@@ -30,10 +30,10 @@ preferences {
 }
 
 def mainPage() {
-    if(app.getInstallationState() != "COMPLETE") {hide=false} else {hide=true}
+    if(app.getInstallationState() != "COMPLETE") {state.hide=false} else {state.hide=true}
 
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","Name"),hideable: true, hidden: hide) {
+		section(getFormat("header","Name"),hideable: true, hidden: state.hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
             getFormat("lessImportant","<br>This will create a virtual humidity sensor which reports the high, low, and average humidity based on the sensors you select."), required:true,width:4
             paragraph ""
@@ -47,7 +47,7 @@ def mainPage() {
 			input "humiditySensors", "capability.relativeHumidityMeasurement", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
 
-		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: hide) {            
+		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: state.hide) {            
             
 			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
@@ -110,16 +110,19 @@ def humidityHandler(evt) {
 
 def createOrUpdateChildDevice() {
     def childDevice = getChildDevice("humiditygroup:" + app.getId())
-    if (!childDevice || state.humidityDevice == null) {
+    state.humidityDevice = state.humidityDevice ?: "humiditygroup:" + app.getId()
+    if (!childDevice) {
         logDebug "Creating child device"
-        state.humidityDevice = "humiditygroup:" + app.getId()
         addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "humiditygroup:" + app.getId(), 1234, [label: app.label, isComponent: false])
     }
-    if(enforceName) {
-		if(childDevice.displayName != app.label) {
-			childDevice.label = app.label
-		}
-	}
+    if(state.hide) {
+        if(enforceName) {
+            if(childDevice.displayName != app.label) {
+				log.warn "Child device of: ${childDevice.displayName} does not equal app name of: ${app.label}. Resetting device name."
+                childDevice.label = app.label
+            }
+        }
+    }
 }
 
 def logInfo(msg) {

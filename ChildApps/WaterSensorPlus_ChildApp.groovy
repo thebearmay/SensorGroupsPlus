@@ -30,10 +30,10 @@ preferences {
 }
 
 def mainPage() {
-	if(app.getInstallationState() != "COMPLETE") {hide=false} else {hide=true}
+	if(app.getInstallationState() != "COMPLETE") {state.hide=false} else {state.hide=true}
 
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
-		section(getFormat("header","Name"),hideable: true, hidden: hide) {
+		section(getFormat("header","Name"),hideable: true, hidden: state.hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
             getFormat("lessImportant","<br>This will create a virtual water sensor which reports the wet/dry status based on the sensors you select."), required:true,width:4
             paragraph ""
@@ -47,7 +47,7 @@ def mainPage() {
 			input "waterSensors", "capability.waterSensor", title: getFormat("lessImportant","Devices to monitor"), multiple:true, required:true,width:4
         }
 
-		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: hide) {            
+		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: state.hide) {            
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be wet before the group is wet?")+
 				getFormat("lessImportant","<br>Leave set to one if any sensor being wet should make the group wet."), required:false, defaultValue: 1,width:4
 			paragraph ""
@@ -108,16 +108,19 @@ def waterHandler(evt) {
 
 def createOrUpdateChildDevice() {
     def childDevice = getChildDevice("watergroup:" + app.getId())
-    if (!childDevice || state.waterDevice == null) {
+    state.waterDevice = state.waterDevice ?: "watergroup:" + app.getId()
+    if (!childDevice) {
         logDebug "Creating child device"
-        state.waterDevice = "watergroup:" + app.getId()
         addChildDevice("rle.sg+", "Sensor Groups+_OmniSensor", "watergroup:" + app.getId(), 1234, [label: app.label, isComponent: false])
     }
-    if(enforceName) {
-		if(childDevice.displayName != app.label) {
-			childDevice.label = app.label
-		}
-	}
+    if(state.hide) {
+        if(enforceName) {
+            if(childDevice.displayName != app.label) {
+                log.warn "Child device of: ${childDevice.displayName} does not equal app name of: ${app.label}. Resetting device name."
+                childDevice.label = app.label
+            }
+        }
+    }
 }
 
 def logInfo(msg) {
