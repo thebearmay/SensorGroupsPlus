@@ -63,7 +63,8 @@ def mainPage() {
 			"Sensor Groups+_Water",
 			"Sensor Groups+_Lux",
 			"Sensor Groups+_Power",
-			"Sensor Groups+_Lock"]
+			"Sensor Groups+_Lock",
+			"Sensor Groups+_Pressure"]
 		logDebug "Installed apps are ${state.allAppNames}"
 		if(state.appInstalled == 'COMPLETE'){
 			section(getFormat("header","${app.label}")) {

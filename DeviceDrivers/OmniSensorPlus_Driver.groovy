@@ -36,6 +36,7 @@ metadata {
         capability "PowerMeter"
         capability "IlluminanceMeasurement"
         capability "Switch"
+        capability "PressureMeasurement"
             
 
         attribute "displayList", "string"
@@ -95,6 +96,12 @@ metadata {
         attribute "TotalUnlocked", "number"
         attribute "UnlockedList", "string"
         attribute "LocksUnlockedThreshold", "number"
+        //Pressure attributes
+        attribute "MaxPressure", "number"
+        attribute "AveragePressure", "number"
+        attribute "MinPressure", "number"
+        attribute "MinPressureDevice", "string"
+        attribute "MaxPressureDevice", "string"
 	}
 }
 
