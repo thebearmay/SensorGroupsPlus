@@ -1,11 +1,11 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "2.1.7",
+  "version": "2.2.0",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
-  "releaseNotes": "v2.1.7 - Fixed logic for child device naming. Set parent app to auto install.\nv2.1.6 - Changed info logging to provide the child device name instead of the generic \"virtual device\"\nv2.1.5 - Added option to keep the app/device name in sync. Made sections of the app page hideable and hidden by default after installation.\nv2.1.4 - Made info logging optional.\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
+  "releaseNotes": "v2.2.0 - Added child app for pressure sensors.\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
   "apps": [
     {
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",
@@ -111,6 +111,15 @@
       "name": "Sensor Groups+_Lock",
       "namespace": "rle.sg+",
       "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/LockSensorPlus_ChildApp.groovy",
+      "required": false,
+      "oauth": false,
+      "primary": false
+    },
+    {
+      "id": "9e0916a5-803b-4a54-a99f-c581d3ecad94",
+      "name": "Sensor Groups+_Pressure",
+      "namespace": "rle.sg+",
+      "location": "https://friedcheese2006.gateway.scarf.sh/ChildApps/PressureSensorPlus_ChildApp.groovy",
       "required": false,
       "oauth": false,
       "primary": false

@@ -97,20 +97,30 @@ def pressureHandler(evt) {
         def map = [:]
         map.name = newName
         map.pressure = it.currentPressure
+        map.pressureMbar = it.currentPressure * 10
         total = (total + it.currentPressure)
         listPressure.add(map)
     }
+    //Calculate and send average
     avgPressure = (total / totalCount).toDouble().round(1)
     logDebug "Average pressure is ${avgPressure}"
-    device.sendEvent(name: "AveragePressure", value: avgPressure)
+    device.sendEvent(name: "AveragePressure", value: avgPressure, unit: "kPa")
+    def avgPressureMbar = avgPressure * 10
+    device.sendEvent(name: "AvgPressureMbar", value: avgPressureMbar, unit: "mbar")
+    
+    //Calculate and send minimum
     minPressure = listPressure.min { it.pressure }
     logDebug "Min pressure is ${minPressure.pressure} from device ${minPressure.name}"
-    device.sendEvent(name: "MinPressure", value: minPressure.pressure)
+    device.sendEvent(name: "MinPressure", value: minPressure.pressure, unit: "kPa")
+    device.sendEvent(name: "MinPressureMbar", value: minPressure.pressureMbar, unit: "mbar")
     device.sendEvent(name: "MinPressureDevice", value:minPressure.name)
+    
+    //Calculate and send maximum
     maxPressure = listPressure.max { it.pressure }
     logDebug "Max pressure is ${maxPressure.pressure} from device ${maxPressure.name}"
     device.sendEvent(name: "MaxPressureDevice", value:maxPressure.name)
-    device.sendEvent(name: "MaxPressure", value: maxPressure.pressure)
+    device.sendEvent(name: "MaxPressureMbar", value: maxPressure.pressureMbar, unit: "mbar")
+    device.sendEvent(name: "MaxPressure", value: maxPressure.pressure, unit: "kPa")
 
     //Create table html string
     String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"

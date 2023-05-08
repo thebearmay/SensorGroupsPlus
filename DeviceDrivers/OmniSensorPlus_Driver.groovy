@@ -98,8 +98,11 @@ metadata {
         attribute "LocksUnlockedThreshold", "number"
         //Pressure attributes
         attribute "MaxPressure", "number"
+        attribute "MaxPressureMbar", "number"
         attribute "AveragePressure", "number"
+        attribute "AvgPressureMbar", "number"
         attribute "MinPressure", "number"
+        attribute "MinPressureMbar", "number"
         attribute "MinPressureDevice", "string"
         attribute "MaxPressureDevice", "string"
 	}
