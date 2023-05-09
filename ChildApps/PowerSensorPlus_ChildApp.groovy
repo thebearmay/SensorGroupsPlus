@@ -102,9 +102,9 @@ def powerHandler(evt) {
     powerSensors.each {it ->
         def map = [:]
         map.name = it.displayName
-        map.value = it.currentPower
-        totalPower = (totalPower + it.currentPower)
-        logDebug "${newName} current power is ${newPower}"
+        map.value = it.currentPower ?: 0
+        totalPower = (totalPower + map.value)
+        logDebug "${newName} current power is ${map.value}"
         powerDevices.add(map)
     }
     powerDevices = powerDevices.sort()
