@@ -21,6 +21,8 @@
  * v2.1.5	RLE		Added option to keep the app/device name in sync. Made sections of the app page hideable and hidden by default after installation.
  * v2.1.6	RLE		Changed info logging to provide the child device name instead of the generic "virtual device"
  * v2.1.7	RLE		Fixed logic for child device naming. Set parent app to auto install.
+ * v2.2.0	RLE		Added child app for pressure sensors.
+ * v2.2.1	RLE		Added a link at the top of the child app page. The link appears after the child app is installed.
  */
  
 definition(

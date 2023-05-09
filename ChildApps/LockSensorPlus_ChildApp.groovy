@@ -31,8 +31,17 @@ preferences {
 
 def mainPage() {
     if(app.getInstallationState() != "COMPLETE") {state.hide=false} else {state.hide=true}
+    String headerTitle
+    if(app.getInstallationState() != "COMPLETE") {
+        headerTitle=getFormat("headerHuge","A child device link will appear here after install!")
+        } else {
+            childDevice = getChildDevice(state.lockDevice)
+            childLink = """<a href="/device/edit/$childDevice.id" style='font-size: 18px'>Click Here To Go To The Child Device</a>"""
+            headerTitle="$childLink"
+            }
 
 	return dynamicPage(name: "mainPage", uninstall:true, install: true) {
+        section("$headerTitle") {}
 		section(getFormat("header","Name"),hideable: true, hidden: state.hide) {
             label title: getFormat("importantBold","Enter a name for this child app.")+
             getFormat("lessImportant","<br>This will create a virtual lock which reports the locked/unlocked status based on the devices you select."), required:true,width:4
@@ -179,6 +188,7 @@ def getCurrentCount() {
 
 def getFormat(type, myText="") {
 	if(type == "header") return "<div style='color:#660000;font-weight: bold'>${myText}</div>"
+    if(type == "headerHuge") return "<div style='color:#5a8200;font-weight: bold;font-size:20px'>${myText}</div>"
 	if(type == "red") return "<div style='color:#660000'>${myText}</div>"
 	if(type == "importantBold") return "<div style='color:#32a4be;font-weight: bold'>${myText}</div>"
 	if(type == "important") return "<div style='color:#32a4be'>${myText}</div>"
