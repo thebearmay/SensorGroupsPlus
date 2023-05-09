@@ -23,6 +23,7 @@
  * v2.1.7	RLE		Fixed logic for child device naming. Set parent app to auto install.
  * v2.2.0	RLE		Added child app for pressure sensors.
  * v2.2.1	RLE		Added a link at the top of the child app page. The link appears after the child app is installed.
+ * v2.2.2	RLE		Added handling to locks to consider a lock in an 'unknown' state as unlocked.
  */
  
 definition(

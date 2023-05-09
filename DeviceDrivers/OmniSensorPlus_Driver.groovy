@@ -38,8 +38,10 @@ metadata {
         capability "Switch"
         capability "PressureMeasurement"
             
-
+        //Generic attributes
         attribute "displayList", "string"
+        attribute "MinDevice", "string"
+        attribute "MaxDevice", "string"
         //Contact attributes	
 		attribute "contact", "enum", ["closed", "open"]
 		attribute "TotalCount", "number"
@@ -103,8 +105,6 @@ metadata {
         attribute "AvgPressureMbar", "number"
         attribute "MinPressure", "number"
         attribute "MinPressureMbar", "number"
-        attribute "MinPressureDevice", "string"
-        attribute "MaxPressureDevice", "string"
 	}
 }
 

@@ -122,12 +122,12 @@ def pressureHandler(evt) {
     logDebug "Min pressure is ${minPressure.pressure} from device ${minPressure.name}"
     device.sendEvent(name: "MinPressure", value: minPressure.pressure, unit: "kPa")
     device.sendEvent(name: "MinPressureMbar", value: minPressure.pressureMbar, unit: "mbar")
-    device.sendEvent(name: "MinPressureDevice", value:minPressure.name)
+    device.sendEvent(name: "MinDevice", value:minPressure.name)
     
     //Calculate and send maximum
     maxPressure = listPressure.max { it.pressure }
     logDebug "Max pressure is ${maxPressure.pressure} from device ${maxPressure.name}"
-    device.sendEvent(name: "MaxPressureDevice", value:maxPressure.name)
+    device.sendEvent(name: "MaxDevice", value:maxPressure.name)
     device.sendEvent(name: "MaxPressureMbar", value: maxPressure.pressureMbar, unit: "mbar")
     device.sendEvent(name: "MaxPressure", value: maxPressure.pressure, unit: "kPa")
 

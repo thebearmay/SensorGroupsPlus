@@ -100,27 +100,25 @@ def powerHandler(evt) {
     def newPower = 0
     def powerDevices = []
     powerSensors.each {it ->
-        def newName = it.displayName
-        if (it.currentPower) {
-            totalPower = (totalPower + it.currentPower)
-            newPower = it.currentPower
-        }
-        if (!it.currentPower) {
-            newPower = 0
-            logDebug "${newName} does not have a value for power"
-        }
+        def map = [:]
+        map.name = it.displayName
+        map.value = it.currentPower
+        totalPower = (totalPower + it.currentPower)
         logDebug "${newName} current power is ${newPower}"
-        powerDevices.add(newName+": "+newPower+"W")
+        powerDevices.add(map)
     }
     powerDevices = powerDevices.sort()
     logInfo "Total power is ${totalPower}"
-    device.sendEvent(name: "PowerDevices", value: powerDevices, unit: "W")
     device.sendEvent(name: "TotalPower", value: totalPower, unit: "W")
+    minPower = powerDevices.min { it.value }
+    maxPower = powerDevices.max { it.value }
+    device.sendEvent(name: "MinDevice", value: minPower.name)
+    device.sendEvent(name: "MaxDevice", value: maxPower.name)
 
     //Create display list
     String displayList = "<ul style='list-style-type: none; margin: 0;padding: 0'>"
 	powerDevices.each {it ->
-	displayList += "<li>${it}</li>"
+	displayList += "<li>${it.name}: ${it.value}</li>"
 	}
 	displayList += "</ul>"
 	device.sendEvent(name: "displayList", value: displayList)

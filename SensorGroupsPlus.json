@@ -1,11 +1,11 @@
 {
   "packageName": "Sensor Groups+",
   "author": "Ryan Elliott",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "minimumHEVersion": "0.0",
   "communityLink": "https://community.hubitat.com/t/release-sensor-groups/101203",
   "dateReleased": "2022-09-18",
-  "releaseNotes": "v2.2.1 - Added a link at the top of the child app page. The link appears after the child app is installed.\nv2.2.0 - Added child app for pressure sensors.\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
+  "releaseNotes": "v2.2.2 - Added handling to locks to consider a lock in an 'unknown' state as unlocked.\nv2.2.1 - Added a link at the top of the child app page. The link appears after the child app is installed.\nv2.2.0 - Added child app for pressure sensors.\n\nFor further information or to report issues/request features, please see the community thread https://community.hubitat.com/t/release-sensor-groups/101203",
   "apps": [
     {
       "id": "e2dc88ca-02c8-4c12-b5cf-70e2309b171a",
