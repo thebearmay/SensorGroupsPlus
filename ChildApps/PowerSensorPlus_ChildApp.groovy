@@ -107,7 +107,7 @@ def powerHandler(evt) {
         logDebug "${newName} current power is ${map.value}"
         powerDevices.add(map)
     }
-    powerDevices = powerDevices.sort()
+    powerDevices = powerDevices.sort { a, b -> a.name.compareTo(b.name) }
     logInfo "Total power is ${totalPower}"
     device.sendEvent(name: "TotalPower", value: totalPower, unit: "W")
     minPower = powerDevices.min { it.value }
