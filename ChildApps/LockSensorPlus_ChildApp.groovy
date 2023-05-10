@@ -156,6 +156,7 @@ def getCurrentCount() {
     def unlockedList = []
     lockSensors.each { it ->
         String lockState = it.currentValue("lock")
+        logDebug "${it.displayName} is ${lockState}"
         if ( lockState == "unlocked" || lockState == "unknown")
         {
             totalUnlocked++
