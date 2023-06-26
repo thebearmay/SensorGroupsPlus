@@ -19,6 +19,7 @@
  * v1.4     RLE     Added on/off for switches
  * v1.5     RLE     Added missing Lux capability; added power
  * v1.6     RLE     Added device listing for the power sensor
+ * v1.7    thebearmay    Add Gas Detectors
  */
 
 metadata {
@@ -37,6 +38,7 @@ metadata {
         capability "IlluminanceMeasurement"
         capability "Switch"
         capability "PressureMeasurement"
+        capability "Gas Detector"
             
         //Generic attributes
         attribute "displayList", "string"
@@ -55,6 +57,9 @@ metadata {
         attribute "TotalClear", "number"
         attribute "CODetectedList", "string"
         attribute "CODetectedThreshold", "number"
+        //Gas Detector Attributes
+        attribute "gasDetectorThreshold", "number"
+        attribute "gasDetectorList", "string"
         //Motion attributes
         attribute "motion", "enum", ["active","inactive"]
         attribute "TotalActive", "number"
@@ -105,6 +110,7 @@ metadata {
         attribute "AvgPressureMbar", "number"
         attribute "MinPressure", "number"
         attribute "MinPressureMbar", "number"
+            
 	}
 }
 
