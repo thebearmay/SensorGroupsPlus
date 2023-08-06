@@ -39,6 +39,7 @@ metadata {
         capability "Switch"
         capability "PressureMeasurement"
         capability "Gas Detector"
+        capability "Temperature Measurement"
             
         //Generic attributes
         attribute "displayList", "string"
