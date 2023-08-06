@@ -106,6 +106,7 @@ def tempHandler(evt) {
     avgTemp = (total / totalCount).toDouble().round(1)
     logDebug "Average temp is ${avgTemp}"
     device.sendEvent(name: "AverageTemp", value: avgTemp)
+    device.sendEvent(name: "temperature", value: avgTemp)
     minTemp = listTemp.min()
     logDebug "Min temp is ${minTemp}"
     device.sendEvent(name: "MinTemp", value: minTemp)
