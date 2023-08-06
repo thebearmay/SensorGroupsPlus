@@ -25,6 +25,7 @@
  * v2.2.1	RLE		Added a link at the top of the child app page. The link appears after the child app is installed.
  * v2.2.2	RLE		Added handling to locks to consider a lock in an 'unknown' state as unlocked.
  * v2.2.4   thebearmay    Add Gas Detectors
+ * v2.2.5   thebearmay    Add temperature measurement capability to the sensor groups
  */
  
 definition(
