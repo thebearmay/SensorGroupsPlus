@@ -26,6 +26,7 @@
  * v2.2.2	RLE		Added handling to locks to consider a lock in an 'unknown' state as unlocked.
  * v2.2.4   thebearmay    Add Gas Detectors
  * v2.2.5   thebearmay    Add temperature measurement capability to the sensor groups
+ * v2.2.6   thebearmay    2.3.6.x UI changes
  */
  
 definition(
@@ -103,25 +104,47 @@ def isInstalled() {
   	}
 }
 
-def getAppsList() {        
-	def params = [
-		uri: "http://127.0.0.1:8080/app/list",
-		textParser: true,
-		headers: [
-			Cookie: state.cookie
-		]
-	  ]
+def getAppsList() { 
+    if(location.hub.firmwareVersionString > "2.3.6.1")
+       params = [
+            uri: "http://127.0.0.1:8080/hub2/userAppTypes",
+       	    contentType: "application/json",
+            followRedirects: false,
+            textParser: false,
+	    	headers: [
+		    	Cookie: state.cookie
+		    ]           
+        ]
+
+    else {
+	    params = [
+		    uri: "http://127.0.0.1:8080/app/list",
+    		textParser: true,
+	    	headers: [
+		    	Cookie: state.cookie
+		    ]
+	   ]
+    }
 	
 	def allAppNames = []
 	try {
-		httpGet(params) { resp ->
-			def matcherText = resp.data.text.replace("\n","").replace("\r","")
-			def matcher = matcherText.findAll(/(<tr class="app-row" data-app-id="[^<>]+">.*?<\/tr>)/).each {
-				def allFields = it.findAll(/(<td .*?<\/td>)/)
-				def title = allFields[0].find(/title="([^"]+)/) { match,t -> return t.trim() }
-                allAppNames.add(title)
-			}
-		}
+        if(location.hub.firmwareVersionString > "2.3.6.0"){
+            httpGet(params) { resp ->
+                resp.data.each {a ->
+                    if("${a.name}".contains("Sensor Groups+"))
+                        allAppNames.add(a.name)
+                }
+            }
+        } else {
+    		httpGet(params) { resp ->
+		    	def matcherText = resp.data.text.replace("\n","").replace("\r","")
+			    def matcher = matcherText.findAll(/(<tr class="app-row" data-app-id="[^<>]+">.*?<\/tr>)/).each {
+    				def allFields = it.findAll(/(<td .*?<\/td>)/)
+	    			def title = allFields[0].find(/title="([^"]+)/) { match,t -> return t.trim() }
+                    allAppNames.add(title)
+			    }
+		    }
+        }
 	} catch (e) {
 		log.error "Error retrieving installed apps: ${e}"
         log.error(getExceptionMessageWithLine(e))
