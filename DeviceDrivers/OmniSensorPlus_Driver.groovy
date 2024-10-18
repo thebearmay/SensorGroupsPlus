@@ -20,6 +20,7 @@
  * v1.5     RLE     Added missing Lux capability; added power
  * v1.6     RLE     Added device listing for the power sensor
  * v1.7    thebearmay    Add Gas Detectors
+ * v1.8    thebearmay    Add Energy Meters
  */
 
 metadata {
@@ -39,7 +40,6 @@ metadata {
         capability "Switch"
         capability "PressureMeasurement"
         capability "Gas Detector"
-        capability "Temperature Measurement"
             
         //Generic attributes
         attribute "displayList", "string"
@@ -58,6 +58,10 @@ metadata {
         attribute "TotalClear", "number"
         attribute "CODetectedList", "string"
         attribute "CODetectedThreshold", "number"
+        //Energy Meter Attributes
+        attribute "maxEnergy", "number"
+        attribute "avgEnergy", "number"
+        attribute "minEnergy", "number"         
         //Gas Detector Attributes
         attribute "gasDetectorThreshold", "number"
         attribute "gasDetectorList", "string"
@@ -98,7 +102,7 @@ metadata {
         //Power attributes
         attribute "TotalPower", "number"
         attribute "PowerDevices", "string"
-        //CO attributes
+        //Lock attributes
         attribute "lock", "enum", ["unlocked", "locked"]
         attribute "TotalLocked", "number"
         attribute "TotalUnlocked", "number"
