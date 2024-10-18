@@ -27,6 +27,7 @@
  * v2.2.4   thebearmay    Add Gas Detectors
  * v2.2.5   thebearmay    Add temperature measurement capability to the sensor groups
  * v2.2.6   thebearmay    2.3.6.x UI changes
+ * v2.2.7   thebearmay    Add Energy Meters
  */
  
 definition(
@@ -61,6 +62,7 @@ def mainPage() {
         getAppsList()
         def childApps = ["Sensor Groups+_CO",
 			"Sensor Groups+_Contact",
+            "Sensor Groups+_Energy",
             "Sensor Groups+_Gas",
 			"Sensor Groups+_Humidity",
 			"Sensor Groups+_Motion",
