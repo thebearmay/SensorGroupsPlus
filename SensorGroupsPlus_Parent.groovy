@@ -28,6 +28,7 @@
  * v2.2.5   thebearmay    Add temperature measurement capability to the sensor groups
  * v2.2.6   thebearmay    2.3.6.x UI changes
  * v2.2.7   thebearmay    Add Energy Meters
+ * v2.2.8		  Modifed Humidity to use the humidity attribute 
  */
  
 definition(
