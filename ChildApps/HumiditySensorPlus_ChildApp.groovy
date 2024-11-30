@@ -35,6 +35,8 @@ def mainPage() {
     if(app.getInstallationState() != "COMPLETE") {
         headerTitle=getFormat("headerHuge","A child device link will appear here after install!")
         } else {
+            if(!state.humidityDevice)
+                state.humidityDevice = "humiditygroup:${app.id}"
             childDevice = getChildDevice(state.humidityDevice)
             childLink = """<a href="/device/edit/$childDevice.id" style='font-size: 18px'>Click Here To Go To The Child Device</a>"""
             headerTitle="$childLink"
@@ -108,6 +110,7 @@ def humidityHandler(evt) {
     avgHumidity = (total / totalCount).toDouble().round(1)
     logDebug "Average humidity is ${avgHumidity}"
     device.sendEvent(name: "AverageHumidity", value: avgHumidity)
+    device.sendEvent(name: "humidity", value: avgHumidity)
     minHumidity = listHumidity.min()
     logDebug "Min humidity is ${minHumidity}"
     device.sendEvent(name: "MinHumidity", value: minHumidity)
