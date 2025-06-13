@@ -1,6 +1,6 @@
 /**
  *
- * Sensor Groups+_OmniSensor
+ * Sensor Groups+ Alexa Contact Sensor
  *
  * Copyright 2022 Ryan Elliott
  * 
