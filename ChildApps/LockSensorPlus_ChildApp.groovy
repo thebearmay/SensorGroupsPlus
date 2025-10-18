@@ -58,7 +58,7 @@ def mainPage() {
 
 		section(getFormat("header","<b>Options</b>"),hideable: true, hidden: state.hide) {            
             input "activeThreshold", "number", title: getFormat("importantBold","How many sensors must be unlocked before the group is unlocked?")+
-				getFormat("lessImportant","<br>Leave set to one if and device being unlocked should change the group to locked."), required:false, defaultValue: 1,width:4
+				getFormat("lessImportant","<br>Leave set to one if any device being unlocked should change the group to unlocked."), required:false, defaultValue: 1,width:4
 			paragraph ""
 			input "infoOutput", "bool", title: "Enable info logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
             input "debugOutput", "bool", title: "Enable debug logging?", defaultValue: true, displayDuringSetup: false, required: false, width: 2
